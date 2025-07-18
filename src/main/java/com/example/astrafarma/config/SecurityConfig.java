@@ -46,16 +46,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-          .cors().and()                     // 2) Habilitamos CORS en HttpSecurity
-          .csrf().disable()
-          .authorizeHttpRequests(auth -> auth
-              .requestMatchers(HttpMethod.GET,    "/api/products/**").permitAll()
-              .requestMatchers(HttpMethod.POST,   "/api/products").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-              .anyRequest().authenticated()
-          )
-          .httpBasic();                      // 3) Mantenemos Basic Auth
-        return http.build();
+    http
+      .cors().and()
+      .csrf().disable()
+      .authorizeHttpRequests(auth -> auth
+        // Permitimos GET exacto en /api/products
+        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
+        // Y GET a cualquier subruta, p. ej. /api/products/search
+        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+        // POST y DELETE los sigue protegiendo como ADMIN
+        .requestMatchers(HttpMethod.POST,   "/api/products").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+        .anyRequest().authenticated()
+      )
+      .httpBasic();
+    return http.build();
     }
 }
