@@ -44,22 +44,21 @@ public class SecurityConfig {
         return src;
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+   @Bean
+   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
       .cors().and()
       .csrf().disable()
       .authorizeHttpRequests(auth -> auth
-        // Permitimos GET exacto en /api/products
+        // 🔓 Permitimos GET de listado sin login
         .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-        // Y GET a cualquier subruta, p. ej. /api/products/search
         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-        // POST y DELETE los sigue protegiendo como ADMIN
+        // 🔒 POST y DELETE siguen protegidos
         .requestMatchers(HttpMethod.POST,   "/api/products").hasRole("ADMIN")
         .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
         .anyRequest().authenticated()
       )
       .httpBasic();
     return http.build();
-    }
+   }
 }
