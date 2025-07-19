@@ -35,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:5173")); // o "*"
+        cfg.setAllowedOrigins(List.of("https://astrafarma.vercel.app")); // o "*"
         cfg.setAllowedMethods(List.of("GET","POST","DELETE","PUT","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
