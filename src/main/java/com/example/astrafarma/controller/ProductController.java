@@ -16,7 +16,7 @@ import java.util.List;
  * enviando cabeceras Content-Type y Authorization.
  */
 @CrossOrigin(
-    origins = "http://localhost:5173",
+    origins = "https://astrafarma.vercel.app",
     allowedHeaders = {"*"},
     methods = {
       RequestMethod.GET,
