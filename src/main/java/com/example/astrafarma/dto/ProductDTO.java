@@ -3,6 +3,7 @@ package com.example.astrafarma.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import com.example.astrafarma.domain.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +23,7 @@ public class ProductDTO {
 
     @NotBlank
     private String imageUrl;
+
+    @NotNull
+    private Category category;
 }
