@@ -24,6 +24,5 @@ public class ProductDTO {
     @NotBlank
     private String imageUrl;
 
-    @NotNull
     private Category category;
 }
