@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.astrafarma.domain.Category;
 
 @Entity
 @Table(name = "products")
@@ -26,4 +27,8 @@ public class Product {
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Category category;
 }
