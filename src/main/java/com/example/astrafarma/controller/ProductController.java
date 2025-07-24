@@ -36,4 +36,19 @@ public class ProductController {
     public List<ProductDTO> searchByName(@RequestParam String name) {
         return service.findByName(name);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> updateById(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductDTO dto) {
+
+        ProductDTO updated = service.updateById(id, dto);
+        return ResponseEntity.ok(updated);
+    }
+    @PutMapping("/by-name")
+    public ResponseEntity<ProductDTO> updateByName(@Valid @RequestBody ProductDTO dto) {
+        ProductDTO updated = service.updateByName(dto);
+        return ResponseEntity.ok(updated);
+    }
+
+
 }
