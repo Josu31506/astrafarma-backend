@@ -63,5 +63,29 @@ public class ProductService {
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
+    public ProductDTO updateById(Long id, ProductDTO dto) {
+        Product existing = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
+        updateEntityFields(existing, dto);
+
+        Product saved = repo.save(existing);
+        return mapper.toDto(saved);
+    }
+    public ProductDTO updateByName(ProductDTO dto) {
+        Product existing = repo.findByName(dto.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con nombre: " + dto.getName()));
+
+        updateEntityFields(existing, dto);
+
+        Product saved = repo.save(existing);
+        return mapper.toDto(saved);
+    }
+    private void updateEntityFields(Product entity, ProductDTO dto) {
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setPrice(dto.getPrice());
+        entity.setImageUrl(dto.getImageUrl());
+        entity.setCategory(dto.getCategory());
+    }
 
 }
