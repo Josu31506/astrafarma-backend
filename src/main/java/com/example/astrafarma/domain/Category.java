@@ -1,6 +1,10 @@
 package com.example.astrafarma.domain;
 
-public enum Category {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+public enum ProductCategory {
+
     CUIDADO_PERSONAL_HIGIENE,
     OTROS,
     VITAMINAS_SUPLEMENTOS_NUTRICIONALES,
@@ -16,5 +20,15 @@ public enum Category {
     CARDIOVASCULARES_ANTIDIABETICOS,
     OFTALMOLOGICOS,
     ANTIHISTAMINICOS_ANTIALERGICOS,
-    NEUROLOGICOS_PSIQUIATRICOS
+    NEUROLOGICOS_PSIQUIATRICOS;
+
+    @JsonCreator
+    public static ProductCategory fromString(String value) {
+        return ProductCategory.valueOf(value.toUpperCase());
+    }
+
+    @JsonValue
+    public String toValue() {
+        return this.name();
+    }
 }
