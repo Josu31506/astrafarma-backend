@@ -39,9 +39,13 @@ public class ProductService {
      */
     public ProductDTO create(ProductDTO dto) {
         Product entity = mapper.toEntity(dto);
+        System.out.println("Entidad guardada: " + entity); // Verifica que tenga category
         Product saved = repo.save(entity);
-        return mapper.toDto(saved);
+        ProductDTO result = mapper.toDto(saved);
+        System.out.println("DTO devuelto: " + result); // Verifica que NO tenga category null
+        return result;
     }
+
 
     /**
      * Elimina el producto con el ID dado. Si no existe, lanza 404.
@@ -59,4 +63,5 @@ public class ProductService {
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
+
 }
