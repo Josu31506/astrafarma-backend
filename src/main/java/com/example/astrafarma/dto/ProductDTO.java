@@ -1,15 +1,21 @@
 package com.example.astrafarma.dto;
 
+import com.example.astrafarma.domain.ProductCategory;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import com.example.astrafarma.domain.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 public class ProductDTO {
+
     private Long id;
 
     @NotBlank
@@ -18,11 +24,12 @@ public class ProductDTO {
     @NotBlank
     private String description;
 
-    @NotNull @Positive
+    @NotNull
+    @Positive
     private Double price;
 
-    @NotBlank
     private String imageUrl;
 
-    private Category category;
+    @JsonFormat(shape = JsonFormat.Shape.STRING) 
+    private ProductCategory category;
 }
