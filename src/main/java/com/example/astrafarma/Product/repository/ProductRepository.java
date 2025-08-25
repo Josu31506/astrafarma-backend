@@ -1,6 +1,6 @@
-package com.example.astrafarma.repository;
+package com.example.astrafarma.Product.repository;
 
-import com.example.astrafarma.domain.Product;
+import com.example.astrafarma.Product.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

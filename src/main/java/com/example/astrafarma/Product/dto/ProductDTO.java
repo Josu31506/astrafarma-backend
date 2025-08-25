@@ -1,4 +1,4 @@
-package com.example.astrafarma.dto;
+package com.example.astrafarma.Product.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

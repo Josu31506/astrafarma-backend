@@ -1,7 +1,7 @@
-package com.example.astrafarma.controller;
+package com.example.astrafarma.Product.controller;
 
-import com.example.astrafarma.dto.ProductDTO;
-import com.example.astrafarma.service.ProductService;
+import com.example.astrafarma.Product.dto.ProductDTO;
+import com.example.astrafarma.Product.domain.ProductService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;

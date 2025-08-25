@@ -1,12 +1,11 @@
-// src/main/java/com/example/astrafarma/service/ProductService.java
-package com.example.astrafarma.service;
+package com.example.astrafarma.Product.domain;
 
-import com.example.astrafarma.domain.Product;
-import com.example.astrafarma.dto.ProductDTO;
+import com.example.astrafarma.Product.dto.ProductDTO;
 import com.example.astrafarma.exception.ResourceNotFoundException;
 import com.example.astrafarma.mapper.ProductMapper;
-import com.example.astrafarma.repository.ProductRepository;
+import com.example.astrafarma.Product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
