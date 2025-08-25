@@ -1,6 +1,6 @@
-package com.example.astrafarma.dto;
+package com.example.astrafarma.Product.dto;
 
-import com.example.astrafarma.domain.ProductCategory;
+import com.example.astrafarma.Product.domain.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +32,6 @@ public class ProductDTO {
 
     private String imageUrl;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING) // Para que se serialice como string y no como null
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private ProductCategory category;
 }

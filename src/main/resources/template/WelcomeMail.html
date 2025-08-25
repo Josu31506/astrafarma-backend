@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenida a Astrafarma</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color:#f9f9f9; padding:20px;">
+<table width="100%" cellpadding="0" cellspacing="0"
+       style="max-width:600px; margin:auto; background:white; border-radius:8px;
+              box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+    <tr>
+        <td style="background:#4CAF50; padding:20px; text-align:center; color:white; border-radius:8px 8px 0 0;">
+            <h1>¡Bienvenido a Astrafarma!</h1>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding:30px; color:#333;">
+            <p>Hola <b th:text="${name}">Usuario</b>,</p>
+            <p>Nos alegra que te hayas unido a <b>Astrafarma</b>.
+                A partir de ahora podrás disfrutar de todos nuestros servicios
+                y estar al día con nuestras novedades.</p>
+            <p style="margin-top:20px;">Estamos felices de contar contigo.</p>
+            <p style="margin-top:30px; font-size:12px; color:#777;">
+                Este correo es informativo, por favor no respondas directamente a este mensaje.
+            </p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
