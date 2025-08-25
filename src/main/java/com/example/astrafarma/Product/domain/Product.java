@@ -1,4 +1,4 @@
-package com.example.astrafarma.domain;
+package com.example.astrafarma.Product.domain;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;

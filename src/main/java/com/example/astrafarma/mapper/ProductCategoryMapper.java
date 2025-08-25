@@ -1,7 +1,7 @@
 package com.example.astrafarma.mapper;
 
 
-import com.example.astrafarma.domain.ProductCategory;
+import com.example.astrafarma.Product.domain.ProductCategory;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
