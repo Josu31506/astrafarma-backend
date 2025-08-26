@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
 @Service
 public class MailService {
 
@@ -19,20 +18,11 @@ public class MailService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    // --- Correo simple (texto plano) ---
-    public void sendMail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        mailSender.send(message);
-    }
-
-    // --- Correo HTML usando plantilla ---
+    // --- Correo HTML de bienvenida ---
     public void sendWelcomeMail(String to, String name) throws Exception {
         Context context = new Context();
         context.setVariable("name", name);
-        String body = templateEngine.process("template/WelcomeMail", context);
+        String body = templateEngine.process("WelcomeMail.html", context);
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(to);
@@ -40,5 +30,18 @@ public class MailService {
         helper.setText(body, true);
         mailSender.send(message);
     }
-}
 
+    // --- Correo HTML de confirmación ---
+    public void sendConfirmationMail(String to, String name, String link) throws Exception {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("link", link);
+        String body = templateEngine.process("ConfirmMail.html", context);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(to);
+        helper.setSubject("Confirma tu cuenta en Astrafarma");
+        helper.setText(body, true);
+        mailSender.send(message);
+    }
+}
