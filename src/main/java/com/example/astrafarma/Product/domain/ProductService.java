@@ -6,6 +6,8 @@ import com.example.astrafarma.exception.ResourceNotFoundException;
 import com.example.astrafarma.mapper.ProductMapper;
 import com.example.astrafarma.Product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,11 @@ public class ProductService {
                 .stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public Page<ProductDTO> listPaged(Pageable pageable) {
+        return repo.findAll(pageable)
+                .map(mapper::toDto);
     }
 
     public ProductDTO create(ProductDTO dto) {
