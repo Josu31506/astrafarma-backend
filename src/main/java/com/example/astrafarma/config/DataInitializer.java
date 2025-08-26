@@ -3,6 +3,10 @@ package com.example.astrafarma.config;
 import com.example.astrafarma.Product.domain.Product;
 import com.example.astrafarma.Product.domain.ProductCategory;
 import com.example.astrafarma.Product.repository.ProductRepository;
+import com.example.astrafarma.User.domain.User;
+import com.example.astrafarma.User.domain.UserGender;
+import com.example.astrafarma.User.domain.UserRole;
+import com.example.astrafarma.User.repository.UserRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -10,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,6 +36,19 @@ public class DataInitializer implements CommandLineRunner {
 
     @Value("${supabase.excel.url}")
     private String excelUrl;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Value("${admin.email}")
+    private String adminEmail;
+    @Value("${admin.password}")
+    private String adminPassword;
+    @Value("${admin.fullname:Administrador}")
+    private String adminFullName;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Random random = new Random();
@@ -68,6 +86,24 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Carga de datos completada exitosamente");
         } catch (Exception e) {
             logger.error("Error al cargar datos desde Excel: {}", e.getMessage(), e);
+        }
+
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
+            User admin = new User();
+            admin.setFullName(adminFullName);
+            admin.setEmail(adminEmail);
+            admin.setPassword(passwordEncoder.encode(adminPassword));
+            admin.setPhoneNumber("0000000000");
+            admin.setGender(UserGender.OTHER);
+            admin.setBirthday(java.time.LocalDate.of(1980, 1, 1));
+            admin.setUserRole(UserRole.ADMIN);
+            admin.setVerified(true);
+            admin.setVerificationToken(null);
+
+            userRepository.save(admin);
+            logger.info("Usuario admin creado con email {}", adminEmail);
+        } else {
+            logger.info("Usuario admin ya existe (email {})", adminEmail);
         }
     }
 
@@ -185,7 +221,6 @@ public class DataInitializer implements CommandLineRunner {
                     return BigDecimal.valueOf(cell.getNumericCellValue());
                 case STRING:
                     String strValue = cell.getStringCellValue().trim();
-                    // Limpiar formato de moneda si existe
                     strValue = strValue.replaceAll("[^\\d.,]", "");
                     strValue = strValue.replace(",", ".");
                     return new BigDecimal(strValue);
