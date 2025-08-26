@@ -1,12 +1,10 @@
 package com.example.astrafarma.Mail.domain;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
+import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,19 +34,21 @@ public class MailService {
     public void sendWelcomeMail(String to, String name) throws Exception {
         Context context = new Context();
         context.setVariable("name", name);
-        String body = templateEngine.process("WelcomeMail.html", context);
-        sendMail(to, "Bienvenido a Astrafarma", body, true);
+        String htmlBody = templateEngine.process("WelcomeMail.html", context);
+        String plainBody = "Hola " + name + ",\n\n¡Bienvenido a Astrafarma!\nTu cuenta ha sido confirmada exitosamente. Accede a nuestra plataforma y explora nuestras categorías y ofertas especiales.\n\nEste correo es informativo, por favor no respondas directamente a este mensaje.\n\nAtentamente,\nAstrafarma";
+        sendMail(to, "¡Bienvenido a Astrafarma!", plainBody, htmlBody);
     }
 
     public void sendConfirmationMail(String to, String name, String link) throws Exception {
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("link", link);
-        String body = templateEngine.process("ConfirmMail.html", context);
-        sendMail(to, "Confirma tu cuenta en Astrafarma", body, true);
+        String htmlBody = templateEngine.process("ConfirmMail.html", context);
+        String plainBody = "Hola " + name + ",\n\nGracias por registrarte en Astrafarma.\nPara completar tu registro, confirma tu cuenta en el siguiente enlace:\n" + link + "\n\nSi no fuiste tú quien se registró, puedes ignorar este mensaje.\n\nAtentamente,\nAstrafarma";
+        sendMail(to, "Confirma tu cuenta en Astrafarma", plainBody, htmlBody);
     }
 
-    public void sendMail(String to, String subject, String body, boolean isHtml) throws Exception {
+    public void sendMail(String to, String subject, String plainBody, String htmlBody) throws Exception {
         String accessToken = mailOAuth2Service.getAccessToken();
 
         Properties props = new Properties();
@@ -69,7 +69,22 @@ public class MailService {
         message.setFrom(new InternetAddress(mailFrom));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject(subject);
-        message.setContent(body, isHtml ? "text/html" : "text/plain");
+
+        message.setHeader("X-Mailer", "AstrafarmaMailer");
+        message.setHeader("List-Unsubscribe", "<mailto:" + mailFrom + ">");
+        message.setReplyTo(new Address[] { new InternetAddress(mailFrom) });
+
+        MimeBodyPart textPart = new MimeBodyPart();
+        textPart.setText(plainBody, "utf-8");
+
+        MimeBodyPart htmlPart = new MimeBodyPart();
+        htmlPart.setContent(htmlBody, "text/html; charset=utf-8");
+
+        MimeMultipart multipart = new MimeMultipart("alternative");
+        multipart.addBodyPart(textPart);
+        multipart.addBodyPart(htmlPart);
+
+        message.setContent(multipart);
 
         Transport.send(message);
     }
