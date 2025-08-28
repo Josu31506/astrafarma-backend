@@ -58,6 +58,7 @@ public class AuthenticationService {
 
         JwtAuthenticationResponse response = new JwtAuthenticationResponse();
         response.setToken(jwt);
+        response.setRole(user.getUserRole().name());
         return response;
     }
 
@@ -73,6 +74,7 @@ public class AuthenticationService {
 
         JwtAuthenticationResponse response = new JwtAuthenticationResponse();
         response.setToken(jwt);
+        response.setRole(user.getUserRole().name());
         return response;
     }
 }

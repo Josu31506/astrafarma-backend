@@ -34,12 +34,24 @@ public class UserService {
     public UserDTO updateAuthenticatedUser(UserRequestDto userRequestDto) {
         User user = AuthUtils.getAuthenticatedUser();
         if (user != null) {
-            user.setFullName(userRequestDto.getFullName());
-            user.setPhoneNumber(userRequestDto.getPhoneNumber());
-            user.setBirthday(userRequestDto.getBirthday());
-            user.setGender(userRequestDto.getGender());
-            user.setPassword(userRequestDto.getPassword());
-            user.setEmail(userRequestDto.getEmail());
+            if (userRequestDto.getFullName() != null) {
+                user.setFullName(userRequestDto.getFullName());
+            }
+            if (userRequestDto.getPhoneNumber() != null) {
+                user.setPhoneNumber(userRequestDto.getPhoneNumber());
+            }
+            if (userRequestDto.getBirthday() != null) {
+                user.setBirthday(userRequestDto.getBirthday());
+            }
+            if (userRequestDto.getGender() != null) {
+                user.setGender(userRequestDto.getGender());
+            }
+            if (userRequestDto.getPassword() != null) {
+                user.setPassword(userRequestDto.getPassword());
+            }
+            if (userRequestDto.getEmail() != null) {
+                user.setEmail(userRequestDto.getEmail());
+            }
             userRepository.save(user);
             return userMapper.userToUserDTO(user);
         }

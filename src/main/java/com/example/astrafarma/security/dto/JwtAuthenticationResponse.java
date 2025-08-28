@@ -1,20 +1,22 @@
 package com.example.astrafarma.security.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class JwtAuthenticationResponse {
     private String token;
-
-    public JwtAuthenticationResponse() {
-    }
+    private String role;
 
     public JwtAuthenticationResponse(String token) {
         this.token = token;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
+    public JwtAuthenticationResponse(String token, String role) {
         this.token = token;
+        this.role = role;
     }
 }

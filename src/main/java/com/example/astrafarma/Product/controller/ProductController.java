@@ -1,5 +1,6 @@
 package com.example.astrafarma.Product.controller;
 
+import com.example.astrafarma.Product.domain.ProductCategory;
 import com.example.astrafarma.Product.dto.ProductDTO;
 import com.example.astrafarma.Product.domain.ProductService;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -34,9 +37,23 @@ public class ProductController {
         return service.listPaged(pageable);
     }
 
-    @GetMapping("/search")
-    public List<ProductDTO> searchByName(@RequestParam String name) {
-        return service.findByName(name);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getById(@PathVariable Long id) {
+        ProductDTO dto = service.getById(id);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/filter")
+    public Page<ProductDTO> filterProducts(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return service.filterProducts(query, category, minPrice, maxPrice, pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -29,7 +29,7 @@ public class UserController {
         return userService.getAuthenticatedUserInfo();
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping("/me")
     public UserDTO updateUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.updateAuthenticatedUser(userRequestDto);
@@ -40,13 +40,13 @@ public class UserController {
         return userService.verifyUser(token);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/me")
     public boolean deleteUser() {
         return userService.deleteAuthenticatedUser();
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/me/top-categories")
     public List<UserCategoryStats> getTop3Categories() {
         return userService.getTop3CategoriesForAuthenticatedUser();
