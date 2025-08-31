@@ -2,6 +2,8 @@ package com.example.astrafarma.Product.domain;
 
 import com.example.astrafarma.Product.domain.Product;
 import com.example.astrafarma.Product.dto.ProductDTO;
+import com.example.astrafarma.SupabaseUpload.domain.SupabaseStorageService;
+import com.example.astrafarma.SupabaseUpload.dto.UploadResponseDTO;
 import com.example.astrafarma.exception.ResourceNotFoundException;
 import com.example.astrafarma.mapper.ProductMapper;
 import com.example.astrafarma.Product.repository.ProductRepository;
@@ -21,6 +23,8 @@ import org.springframework.data.jpa.domain.Specification;
 import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,8 @@ public class ProductService {
     @Autowired
     private ProductMapper mapper;
 
+    @Autowired
+    private SupabaseStorageService supabaseStorage;
 
     public ProductDTO getById(Long id) {
         Product product = productRepository.findById(id)
@@ -53,13 +59,14 @@ public class ProductService {
                 .map(mapper::toDto);
     }
 
-    public ProductDTO create(ProductDTO dto) {
+    public ProductDTO create(ProductDTO dto, MultipartFile image) throws Exception {
         Product entity = mapper.toEntity(dto);
-        System.out.println("Entidad guardada: " + entity);
+        if (image != null && !image.isEmpty()) {
+            UploadResponseDTO img = supabaseStorage.uploadImage(image, true);
+            entity.setImageUrl(img.getUrl());
+        }
         Product saved = productRepository.save(entity);
-        ProductDTO result = mapper.toDto(saved);
-        System.out.println("DTO devuelto: " + result);
-        return result;
+        return mapper.toDto(saved);
     }
 
     public void delete(Long id) {
@@ -76,11 +83,15 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductDTO updateById(Long id, ProductDTO dto) {
+    public ProductDTO updateById(Long id, ProductDTO dto, MultipartFile image) throws Exception {
         Product existing = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
         updateEntityFields(existing, dto);
-
+        if (image != null && !image.isEmpty()) {
+            supabaseStorage.deleteImage(existing.getImageUrl(), true);
+            UploadResponseDTO img = supabaseStorage.uploadImage(image, true);
+            existing.setImageUrl(img.getUrl());
+        }
         Product saved = productRepository.save(existing);
         return mapper.toDto(saved);
     }
@@ -108,6 +119,7 @@ public class ProductService {
             ProductCategory category,
             BigDecimal minPrice,
             BigDecimal maxPrice,
+            List<Long> ids,
             Pageable pageable
     ) {
         Specification<Product> spec = (root, cq, cb) -> {
@@ -130,6 +142,9 @@ public class ProductService {
             }
             if (maxPrice != null) {
                 predicates.add(cb.lessThanOrEqualTo(root.get("price"), maxPrice));
+            }
+            if (ids != null && !ids.isEmpty()) {
+                predicates.add(root.get("id").in(ids));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         };

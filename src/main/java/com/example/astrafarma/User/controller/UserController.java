@@ -4,6 +4,7 @@ import com.example.astrafarma.User.domain.UserCategoryStats;
 import com.example.astrafarma.User.dto.UserDTO;
 import com.example.astrafarma.User.domain.UserService;
 import com.example.astrafarma.User.dto.UserRequestDto;
+import com.example.astrafarma.security.dto.JwtAuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/verify")
-    public boolean verifyUser(@RequestParam String token) {
+    public JwtAuthenticationResponse verifyUser(@RequestParam String token) {
         return userService.verifyUser(token);
     }
 

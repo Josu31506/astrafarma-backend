@@ -12,9 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 public class OfferDTO {
     private Long id;
+    private String title;
+    private String description;
     private String imageUrl;
-    private String mensajeWhatsApp;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<Long> productIds;
+    private List<ProductDiscountDTO> discounts;
 }

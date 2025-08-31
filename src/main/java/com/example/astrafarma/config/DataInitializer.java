@@ -64,13 +64,6 @@ public class DataInitializer implements CommandLineRunner {
             "Medicamento de uso común en la práctica médica diaria"
     );
 
-    private final List<String> imagePlaceholders = Arrays.asList(
-            "https://via.placeholder.com/300x300/0066cc/ffffff?text=Medicamento",
-            "https://via.placeholder.com/300x300/00aa44/ffffff?text=Farmaco",
-            "https://via.placeholder.com/300x300/cc6600/ffffff?text=Producto",
-            "https://via.placeholder.com/300x300/9933cc/ffffff?text=Medicina",
-            "https://via.placeholder.com/300x300/cc0066/ffffff?text=Tratamiento"
-    );
 
     @Override
     public void run(String... args) throws Exception {
@@ -97,7 +90,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setGender(UserGender.OTHER);
             admin.setBirthday(java.time.LocalDate.of(1980, 1, 1));
             admin.setUserRole(UserRole.ADMIN);
-            admin.setVerified(true);
+            admin.setVerified(false);
             admin.setVerificationToken(null);
 
             userRepository.save(admin);
@@ -190,7 +183,6 @@ public class DataInitializer implements CommandLineRunner {
         product.setCategory(category);
 
         product.setDescription(getRandomDescription());
-        product.setImageUrl(getRandomImageUrl());
 
         logger.debug("Creado producto: {} - ${} - {}", name, price, category);
 
@@ -237,49 +229,79 @@ public class DataInitializer implements CommandLineRunner {
         if (categoryStr == null || categoryStr.trim().isEmpty()) {
             return ProductCategory.OTROS;
         }
+        String category = categoryStr.trim();
+        String categoryLower = category.toLowerCase();
 
-        String category = categoryStr.trim().toLowerCase();
-
-        if (category.contains("cuidado personal") || category.contains("higiene")) {
+        if (category.equalsIgnoreCase("CUIDADO PERSONAL E HIGIENE")) {
             return ProductCategory.CUIDADO_PERSONAL_HIGIENE;
-        } else if (category.contains("vitamina") || category.contains("suplemento") || category.contains("nutricional")) {
+        } else if (category.equalsIgnoreCase("VITAMINAS Y SUPLEMENTOS")) {
             return ProductCategory.VITAMINAS_SUPLEMENTOS_NUTRICIONALES;
-        } else if (category.contains("respiratorio") || category.contains("expectorante") || category.contains("tos")) {
+        } else if (category.equalsIgnoreCase("RESPIRATORIOS Y EXPECTORANTES")) {
             return ProductCategory.RESPIRATORIOS_EXPECTORANTES;
-        } else if (category.contains("antibiotico") || category.contains("antiviral") || category.contains("infeccion")) {
+        } else if (category.equalsIgnoreCase("ANTIBIÓTICOS Y ANTIVIRALES")) {
             return ProductCategory.ANTIBIOTICOS_ANTIVIRALES;
-        } else if (category.contains("dermatologico") || category.contains("piel") || category.contains("cutaneo")) {
+        } else if (category.equalsIgnoreCase("DERMATOLÓGICOS Y TRATAMIENTOS CUTÁNEOS")) {
             return ProductCategory.DERMATOLOGICOS_TRATAMIENTOS_CUTANEOS;
-        } else if (category.contains("analgesico") || category.contains("antinflamatorio") || category.contains("dolor")) {
+        } else if (category.equalsIgnoreCase("ANALGÉSICOS Y ANTIINFLAMATORIOS")) {
             return ProductCategory.ANALGESICOS_ANTINFLAMATORIOS;
-        } else if (category.contains("material medico") || category.contains("equipo") || category.contains("dispositivo")) {
+        } else if (category.equalsIgnoreCase("MATERIAL MÉDICO Y EQUIPOS")) {
             return ProductCategory.MATERIAL_MEDICO_EQUIPOS;
-        } else if (category.contains("medicina natural") || category.contains("hidratacion") || category.contains("natural")) {
+        } else if (category.equalsIgnoreCase("MEDICINA NATURAL Y HIDRATACIÓN")) {
             return ProductCategory.MEDICINA_NATURAL_HIDRATACION;
-        } else if (category.contains("pediatrico") || category.contains("lactancia") || category.contains("bebe") || category.contains("niño")) {
+        } else if (category.equalsIgnoreCase("PEDIÁTRICOS Y LACTANCIA")) {
             return ProductCategory.PEDIATRICOS_LACTANCIA;
-        } else if (category.contains("gastrointestinal") || category.contains("digestivo") || category.contains("estomago")) {
+        } else if (category.equalsIgnoreCase("GASTROINTESTINALES Y DIGESTIVOS")) {
             return ProductCategory.GASTROINTESTINALES_DIGESTIVOS;
-        } else if (category.contains("ginecologico") || category.contains("urologico") || category.contains("genital")) {
+        } else if (category.equalsIgnoreCase("GINECOLÓGICOS Y UROLÓGICOS")) {
             return ProductCategory.GINECOLOGICOS_UROLOGICOS;
-        } else if (category.contains("cardiovascular") || category.contains("antidiabetico") || category.contains("corazon") || category.contains("diabetes")) {
+        } else if (category.equalsIgnoreCase("CARDIOVASCULARES Y ANTIDIABÉTICOS")) {
             return ProductCategory.CARDIOVASCULARES_ANTIDIABETICOS;
-        } else if (category.contains("oftalmologico") || category.contains("ojo") || category.contains("vision")) {
+        } else if (category.equalsIgnoreCase("OFTALMOLÓGICOS")) {
             return ProductCategory.OFTALMOLOGICOS;
-        } else if (category.contains("antihistaminico") || category.contains("antialergico") || category.contains("alergia")) {
+        } else if (category.equalsIgnoreCase("ANTIHISTAMÍNICOS Y ANTIALÉRGICOS")) {
             return ProductCategory.ANTIHISTAMINICOS_ANTIALERGICOS;
-        } else if (category.contains("neurologico") || category.contains("psiquiatrico") || category.contains("nervioso")) {
+        } else if (category.equalsIgnoreCase("NEUROLÓGICOS Y PSIQUIÁTRICOS")) {
             return ProductCategory.NEUROLOGICOS_PSIQUIATRICOS;
-        } else {
+        } else if (category.equalsIgnoreCase("OTROS")) {
             return ProductCategory.OTROS;
         }
+
+        if (categoryLower.contains("cuidado personal") || categoryLower.contains("higiene")) {
+            return ProductCategory.CUIDADO_PERSONAL_HIGIENE;
+        } else if (categoryLower.contains("vitamina") || categoryLower.contains("suplemento") || categoryLower.contains("nutricional")) {
+            return ProductCategory.VITAMINAS_SUPLEMENTOS_NUTRICIONALES;
+        } else if (categoryLower.contains("respiratorio") || categoryLower.contains("expectorante") || categoryLower.contains("tos")) {
+            return ProductCategory.RESPIRATORIOS_EXPECTORANTES;
+        } else if (categoryLower.contains("antibiotico") || categoryLower.contains("antibiótico") || categoryLower.contains("antiviral") || categoryLower.contains("infeccion")) {
+            return ProductCategory.ANTIBIOTICOS_ANTIVIRALES;
+        } else if (categoryLower.contains("dermatologico") || categoryLower.contains("dermatológico") || categoryLower.contains("piel") || categoryLower.contains("cutaneo") || categoryLower.contains("cutáneo")) {
+            return ProductCategory.DERMATOLOGICOS_TRATAMIENTOS_CUTANEOS;
+        } else if (categoryLower.contains("analgesico") || categoryLower.contains("analgésico") || categoryLower.contains("antinflamatorio") || categoryLower.contains("antiinflamatorio") || categoryLower.contains("dolor")) {
+            return ProductCategory.ANALGESICOS_ANTINFLAMATORIOS;
+        } else if (categoryLower.contains("material medico") || categoryLower.contains("material médico") || categoryLower.contains("equipo") || categoryLower.contains("dispositivo")) {
+            return ProductCategory.MATERIAL_MEDICO_EQUIPOS;
+        } else if (categoryLower.contains("medicina natural") || categoryLower.contains("hidratacion") || categoryLower.contains("hidratación") || categoryLower.contains("natural")) {
+            return ProductCategory.MEDICINA_NATURAL_HIDRATACION;
+        } else if (categoryLower.contains("pediatrico") || categoryLower.contains("pediátrico") || categoryLower.contains("lactancia") || categoryLower.contains("bebe") || categoryLower.contains("bebé") || categoryLower.contains("niño") || categoryLower.contains("niños")) {
+            return ProductCategory.PEDIATRICOS_LACTANCIA;
+        } else if (categoryLower.contains("gastrointestinal") || categoryLower.contains("digestivo") || categoryLower.contains("estomago") || categoryLower.contains("estómago")) {
+            return ProductCategory.GASTROINTESTINALES_DIGESTIVOS;
+        } else if (categoryLower.contains("ginecologico") || categoryLower.contains("ginecológico") || categoryLower.contains("urologico") || categoryLower.contains("urológico") || categoryLower.contains("genital")) {
+            return ProductCategory.GINECOLOGICOS_UROLOGICOS;
+        } else if (categoryLower.contains("cardiovascular") || categoryLower.contains("antidiabetico") || categoryLower.contains("antidiabético") || categoryLower.contains("corazon") || categoryLower.contains("corazón") || categoryLower.contains("diabetes")) {
+            return ProductCategory.CARDIOVASCULARES_ANTIDIABETICOS;
+        } else if (categoryLower.contains("oftalmologico") || categoryLower.contains("oftalmológico") || categoryLower.contains("ojo") || categoryLower.contains("ojos") || categoryLower.contains("vision") || categoryLower.contains("visión")) {
+            return ProductCategory.OFTALMOLOGICOS;
+        } else if (categoryLower.contains("antihistaminico") || categoryLower.contains("antihistamínico") || categoryLower.contains("antialergico") || categoryLower.contains("antialérgico") || categoryLower.contains("alergia")) {
+            return ProductCategory.ANTIHISTAMINICOS_ANTIALERGICOS;
+        } else if (categoryLower.contains("neurologico") || categoryLower.contains("neurológico") || categoryLower.contains("psiquiatrico") || categoryLower.contains("psiquiátrico") || categoryLower.contains("nervioso")) {
+            return ProductCategory.NEUROLOGICOS_PSIQUIATRICOS;
+        }
+
+        return ProductCategory.OTROS;
     }
 
     private String getRandomDescription() {
         return descriptionPlaceholders.get(random.nextInt(descriptionPlaceholders.size()));
-    }
-
-    private String getRandomImageUrl() {
-        return imagePlaceholders.get(random.nextInt(imagePlaceholders.size()));
     }
 }

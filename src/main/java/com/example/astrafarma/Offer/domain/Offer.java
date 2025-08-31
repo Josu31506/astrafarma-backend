@@ -19,11 +19,14 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+    @Column(name = "title", length = 256)
+    private String title;
 
-    @Column(length = 1000, nullable = false)
-    private String mensajeWhatsApp;
+    @Column(name = "description", length = 1256)
+    private String description;
+
+    @Column(name = "image_url", length = 1256)
+    private String imageUrl;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;
@@ -39,4 +42,7 @@ public class Offer {
     )
     @NotEmpty(message = "La oferta debe estar vinculada al menos a un producto")
     private List<Product> products;
+
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OfferProductDiscount> discounts;
 }

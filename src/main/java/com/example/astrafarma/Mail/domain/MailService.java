@@ -31,9 +31,13 @@ public class MailService {
     @Value("${mail.oauth.from}")
     private String mailFrom;
 
+    @Value("${frontend.base.url}")
+    private String frontendBaseUrl;
+
     public void sendWelcomeMail(String to, String name) throws Exception {
         Context context = new Context();
         context.setVariable("name", name);
+        context.setVariable("homeUrl", frontendBaseUrl); // <<--- NUEVO
         String htmlBody = templateEngine.process("WelcomeMail.html", context);
         String plainBody = "Hola " + name + ",\n\n¡Bienvenido a Astrafarma!\nTu cuenta ha sido confirmada exitosamente. Accede a nuestra plataforma y explora nuestras categorías y ofertas especiales.\n\nEste correo es informativo, por favor no respondas directamente a este mensaje.\n\nAtentamente,\nAstrafarma";
         sendMail(to, "¡Bienvenido a Astrafarma!", plainBody, htmlBody);
@@ -46,6 +50,16 @@ public class MailService {
         String htmlBody = templateEngine.process("ConfirmMail.html", context);
         String plainBody = "Hola " + name + ",\n\nGracias por registrarte en Astrafarma.\nPara completar tu registro, confirma tu cuenta en el siguiente enlace:\n" + link + "\n\nSi no fuiste tú quien se registró, puedes ignorar este mensaje.\n\nAtentamente,\nAstrafarma";
         sendMail(to, "Confirma tu cuenta en Astrafarma", plainBody, htmlBody);
+    }
+
+    public void sendOffersNotificationMail(String to, String name, String message) throws Exception {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("message", message);
+        context.setVariable("offersUrl", frontendBaseUrl); // <<--- Aquí
+        String htmlBody = templateEngine.process("OffersNotificationMail.html", context);
+        String plainBody = "Hola " + name + ",\n\n" + message + "\n\nAtentamente,\nAstrafarma";
+        sendMail(to, "¡Nuevas ofertas en Astrafarma!", plainBody, htmlBody);
     }
 
     public void sendMail(String to, String subject, String plainBody, String htmlBody) throws Exception {
