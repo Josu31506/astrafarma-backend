@@ -1,27 +1,55 @@
 package com.example.astrafarma.mapper;
 
 import com.example.astrafarma.Offer.domain.Offer;
+import com.example.astrafarma.Offer.domain.OfferProductDiscount;
 import com.example.astrafarma.Offer.dto.OfferDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
+import com.example.astrafarma.Offer.dto.ProductDiscountDTO;
+import com.example.astrafarma.Product.domain.Product;
+import com.example.astrafarma.Product.repository.ProductRepository;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface OfferMapper {
-    OfferMapper INSTANCE = Mappers.getMapper(OfferMapper.class);
+public abstract class OfferMapper {
+    @Autowired
+    protected ProductRepository productRepository;
 
     @Mapping(target = "productIds", source = "products", qualifiedByName = "productsToIds")
-    OfferDTO offerToOfferDTO(Offer offer);
+    @Mapping(target = "discounts", source = "discounts", qualifiedByName = "discountsToDTOs")
+    public abstract OfferDTO offerToOfferDTO(Offer offer);
 
     @Mapping(target = "products", ignore = true)
-    Offer offerDTOToOffer(OfferDTO dto);
+    @Mapping(target = "discounts", source = "discounts", qualifiedByName = "discountsToEntities")
+    public abstract Offer offerDTOToOffer(OfferDTO dto);
 
     @Named("productsToIds")
-    default List<Long> productsToIds(List<com.example.astrafarma.Product.domain.Product> products) {
-        return products == null ? null : products.stream().map(com.example.astrafarma.Product.domain.Product::getId).collect(Collectors.toList());
+    public List<Long> productsToIds(List<Product> products) {
+        return products == null ? null : products.stream().map(Product::getId).collect(Collectors.toList());
+    }
+
+    @Named("discountsToDTOs")
+    public List<ProductDiscountDTO> discountsToDTOs(List<OfferProductDiscount> discounts) {
+        if (discounts == null) return new ArrayList<>();
+        return discounts.stream().map(d -> {
+            ProductDiscountDTO dto = new ProductDiscountDTO();
+            dto.setProductId(d.getProduct().getId());
+            dto.setDiscountPercentage(d.getDiscountPercentage());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Named("discountsToEntities")
+    public List<OfferProductDiscount> discountsToEntities(List<ProductDiscountDTO> dtos) {
+        if (dtos == null) return new ArrayList<>();
+        return dtos.stream().map(dto -> {
+            OfferProductDiscount entity = new OfferProductDiscount();
+            entity.setProduct(productRepository.findById(dto.getProductId()).orElse(null));
+            entity.setDiscountPercentage(dto.getDiscountPercentage());
+            return entity;
+        }).collect(Collectors.toList());
     }
 }

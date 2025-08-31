@@ -1,15 +1,22 @@
 package com.example.astrafarma.Offer.domain;
 
+import com.example.astrafarma.Mail.events.OffersPublishedEvent;
 import com.example.astrafarma.Offer.dto.OfferDTO;
+import com.example.astrafarma.Offer.dto.ProductDiscountDTO;
 import com.example.astrafarma.Product.repository.ProductRepository;
 import com.example.astrafarma.Offer.repository.OfferRepository;
+import com.example.astrafarma.SupabaseUpload.domain.SupabaseStorageService;
+import com.example.astrafarma.SupabaseUpload.dto.UploadResponseDTO;
 import com.example.astrafarma.exception.OfferNotFoundException;
 import com.example.astrafarma.mapper.OfferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OfferService {
@@ -23,6 +30,12 @@ public class OfferService {
     @Autowired
     private OfferMapper offerMapper;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorage;
+
     public List<OfferDTO> getAllOffers() {
         return offerRepository.findAll().stream()
                 .map(offerMapper::offerToOfferDTO)
@@ -35,21 +48,59 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(offer);
     }
 
-    public OfferDTO createOffer(OfferDTO dto) {
+
+    public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
         offer.setProducts(productRepository.findAllById(dto.getProductIds()));
+        if (offer.getDiscounts() != null) {
+            offer.getDiscounts().forEach(d -> d.setOffer(offer));
+        }
+        if (image != null && !image.isEmpty()) {
+            UploadResponseDTO img = supabaseStorage.uploadImage(image, false);
+            offer.setImageUrl(img.getUrl());
+        }
         Offer saved = offerRepository.save(offer);
         return offerMapper.offerToOfferDTO(saved);
     }
 
-    public OfferDTO updateOffer(Long id, OfferDTO dto) {
+
+    public OfferDTO updateOffer(Long id, OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException("Oferta no encontrada"));
-        offer.setImageUrl(dto.getImageUrl());
-        offer.setMensajeWhatsApp(dto.getMensajeWhatsApp());
-        offer.setStartDate(dto.getStartDate());
-        offer.setEndDate(dto.getEndDate());
-        offer.setProducts(productRepository.findAllById(dto.getProductIds()));
+
+        if (dto.getTitle() != null) {
+            offer.setTitle(dto.getTitle());
+        }
+        if (dto.getDescription() != null) {
+            offer.setDescription(dto.getDescription());
+        }
+        if (dto.getImageUrl() != null) {
+            offer.setImageUrl(dto.getImageUrl());
+        }
+        if (dto.getStartDate() != null) {
+            offer.setStartDate(dto.getStartDate());
+        }
+        if (dto.getEndDate() != null) {
+            offer.setEndDate(dto.getEndDate());
+        }
+        if (dto.getProductIds() != null) {
+            offer.setProducts(productRepository.findAllById(dto.getProductIds()));
+        }
+        if (dto.getDiscounts() != null) {
+            offer.getDiscounts().clear();
+            for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
+                OfferProductDiscount discount = new OfferProductDiscount();
+                discount.setOffer(offer);
+                discount.setProduct(productRepository.findById(discountDTO.getProductId()).orElse(null));
+                discount.setDiscountPercentage(discountDTO.getDiscountPercentage());
+                offer.getDiscounts().add(discount);
+            }
+        }
+        if (image != null && !image.isEmpty()) {
+            supabaseStorage.deleteImage(offer.getImageUrl(), false);
+            UploadResponseDTO img = supabaseStorage.uploadImage(image, false);
+            offer.setImageUrl(img.getUrl());
+        }
         Offer updated = offerRepository.save(offer);
         return offerMapper.offerToOfferDTO(updated);
     }
@@ -59,5 +110,21 @@ public class OfferService {
             throw new OfferNotFoundException("Oferta no encontrada");
         }
         offerRepository.deleteById(id);
+    }
+
+    public void notifyOffersToUsers(List<Long> offerIds) {
+        List<Offer> offers = offerRepository.findAllWithDiscountsByIdIn(offerIds);
+
+        List<ProductDiscountDTO> allDiscounts = offers.stream()
+                .flatMap(offer -> offer.getDiscounts().stream()
+                        .map(d -> {
+                            ProductDiscountDTO dto = new ProductDiscountDTO();
+                            dto.setProductId(d.getProduct().getId());
+                            dto.setDiscountPercentage(d.getDiscountPercentage());
+                            return dto;
+                        })
+                ).collect(Collectors.toList());
+
+        eventPublisher.publishEvent(new OffersPublishedEvent(offerIds, allDiscounts));
     }
 }

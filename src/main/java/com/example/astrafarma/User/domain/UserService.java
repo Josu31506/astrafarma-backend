@@ -7,6 +7,8 @@ import com.example.astrafarma.mapper.UserMapper;
 import com.example.astrafarma.User.dto.UserRequestDto;
 import com.example.astrafarma.User.repository.UserRepository;
 import com.example.astrafarma.security.AuthUtils;
+import com.example.astrafarma.security.JwtService;
+import com.example.astrafarma.security.dto.JwtAuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class UserService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private JwtService jwtService;
 
     public UserDTO updateAuthenticatedUser(UserRequestDto userRequestDto) {
         User user = AuthUtils.getAuthenticatedUser();
@@ -66,7 +71,7 @@ public class UserService {
         return userMapper.userToUserDTO(user);
     }
 
-    public boolean verifyUser(String token) {
+    public JwtAuthenticationResponse verifyUser(String token) {
         Optional<User> userOpt = userRepository.findAll().stream()
                 .filter(u -> token.equals(u.getVerificationToken()))
                 .findFirst();
@@ -81,9 +86,14 @@ public class UserService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return true;
+            String jwt = jwtService.generateToken(user);
+
+            JwtAuthenticationResponse response = new JwtAuthenticationResponse();
+            response.setToken(jwt);
+            response.setRole(user.getUserRole().name());
+            return response;
         }
-        return false;
+        throw new UserNotFoundException("Token de verificación inválido.");
     }
 
     public boolean deleteAuthenticatedUser() {

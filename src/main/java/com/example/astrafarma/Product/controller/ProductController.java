@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,18 +50,33 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) List<Long> ids,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        return service.filterProducts(query, category, minPrice, maxPrice, pageable);
+        return service.filterProducts(query, category, minPrice, maxPrice, ids, pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
-    public ResponseEntity<ProductDTO> create(@Valid @RequestBody ProductDTO dto) {
-        ProductDTO savedDto = service.create(dto);
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<ProductDTO> createWithImage(
+            @RequestPart("data") ProductDTO dto,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ) throws Exception {
+        ProductDTO savedDto = service.create(dto, image);
         return ResponseEntity.ok(savedDto);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<ProductDTO> updateWithImage(
+            @PathVariable Long id,
+            @RequestPart("data") ProductDTO dto,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ) throws Exception {
+        ProductDTO updated = service.updateById(id, dto, image);
+        return ResponseEntity.ok(updated);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -68,16 +84,6 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateById(
-            @PathVariable Long id,
-            @Valid @RequestBody ProductDTO dto) {
-
-        ProductDTO updated = service.updateById(id, dto);
-        return ResponseEntity.ok(updated);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

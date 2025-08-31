@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Nuevas ofertas en Astrafarma!</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #f5f7fa; line-height: 1.6;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; padding: 20px;">
+    <tr>
+        <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
+
+                <!-- Header -->
+                <tr>
+                    <td style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); padding: 40px 30px; text-align: center;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="center">
+                                    <div style="background-color: rgba(255, 255, 255, 0.15); width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px; display: inline-block; vertical-align: middle; text-align: center; line-height: 100px;">
+                                        <span style="font-size: 48px;">🔥</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0;">¡Ofertas Especiales!</h1>
+                                    <p style="color: rgba(255, 255, 255, 0.9); font-size: 18px; margin: 8px 0 0 0;">Descuentos exclusivos para ti</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Content -->
+                <tr>
+                    <td style="padding: 40px 30px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <h2 style="font-size: 24px; font-weight: 600; color: #1a202c; margin: 0 0 20px 0;">
+                                        ¡Hola <span th:text="${name}">Usuario</span>! 🎁
+                                    </h2>
+
+                                    <p style="color: #4a5568; font-size: 16px; line-height: 1.7; margin: 0 0 30px 0;">
+                                        Tenemos <strong>nuevas ofertas increíbles</strong> que no puedes perderte.
+                                        Aprovecha estos descuentos especiales disponibles por tiempo limitado.
+                                    </p>
+                                </td>
+                            </tr>
+
+                            <!-- Offers Section -->
+                            <tr>
+                                <td>
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%); border-radius: 16px; margin: 30px 0;">
+                                        <tr>
+                                            <td style="padding: 30px;">
+                                                <h3 style="text-align: center; color: #2d3748; font-size: 20px; font-weight: 700; margin: 0 0 25px 0;">
+                                                    🌟 Ofertas Disponibles
+                                                </h3>
+
+                                                <!-- Message Content -->
+                                                <div style="background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                                    <div style="color: #4a5568; font-size: 15px; line-height: 1.7;" th:utext="${message}">
+                                                        Mensaje de ofertas aquí...
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- Features Section -->
+                            <tr>
+                                <td>
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border-radius: 16px; margin: 30px 0;">
+                                        <tr>
+                                            <td style="padding: 30px;">
+                                                <h3 style="text-align: center; color: #2d3748; font-size: 18px; font-weight: 600; margin: 0 0 25px 0;">
+                                                    ¿Cómo aprovechar estas ofertas?
+                                                </h3>
+
+                                                <table width="100%" cellpadding="0" cellspacing="0">
+                                                    <tr>
+                                                        <td width="33.33%" align="center" style="padding: 0 10px;">
+                                                            <table cellpadding="0" cellspacing="0">
+                                                                <tr>
+                                                                    <td align="center">
+                                                                        <div style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 12px; display: inline-block; text-align: center; line-height: 60px;">
+                                                                            <span style="color: white; font-size: 24px;">👁</span>
+                                                                        </div>
+                                                                        <p style="font-weight: 600; color: #2d3748; font-size: 14px; margin: 0 0 4px 0;">Explora el catálogo</p>
+                                                                        <p style="color: #718096; font-size: 12px; margin: 0;">Encuentra los productos en oferta</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td width="33.33%" align="center" style="padding: 0 10px;">
+                                                            <table cellpadding="0" cellspacing="0">
+                                                                <tr>
+                                                                    <td align="center">
+                                                                        <div style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 12px; display: inline-block; text-align: center; line-height: 60px;">
+                                                                            <span style="color: white; font-size: 24px;">📱</span>
+                                                                        </div>
+                                                                        <p style="font-weight: 600; color: #2d3748; font-size: 14px; margin: 0 0 4px 0;">Contacta por WhatsApp</p>
+                                                                        <p style="color: #718096; font-size: 12px; margin: 0;">Consulta disponibilidad</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        <td width="33.33%" align="center" style="padding: 0 10px;">
+                                                            <table cellpadding="0" cellspacing="0">
+                                                                <tr>
+                                                                    <td align="center">
+                                                                        <div style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 12px; display: inline-block; text-align: center; line-height: 60px;">
+                                                                            <span style="color: white; font-size: 24px;">💰</span>
+                                                                        </div>
+                                                                        <p style="font-weight: 600; color: #2d3748; font-size: 14px; margin: 0 0 4px 0;">Aprovecha el descuento</p>
+                                                                        <p style="color: #718096; font-size: 12px; margin: 0;">¡Por tiempo limitado!</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- CTA Section -->
+                            <tr>
+                                <td align="center" style="padding: 20px 0;">
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px;">
+                                        <tr>
+                                            <td style="padding: 30px; text-align: center;">
+                                                <h3 style="color: white; font-size: 18px; font-weight: 600; margin: 0 0 15px 0;">¡No dejes pasar estas ofertas!</h3>
+                                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 14px; margin: 0 0 20px 0;">Las promociones tienen validez limitada</p>
+                                                <a th:href="${offersUrl}" style="background-color: white; color: #667eea; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
+                                                    🛒 Ver ofertas ahora
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- Warning -->
+                            <tr>
+                                <td>
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef5e7; border: 1px solid #f6e05e; border-radius: 8px; margin: 20px 0;">
+                                        <tr>
+                                            <td style="padding: 16px;">
+                                                <p style="color: #744210; font-size: 14px; margin: 0;">
+                                                    <strong>⏰ Importante:</strong> Las ofertas tienen fecha de vencimiento.
+                                                    Consulta los términos y condiciones de cada promoción para más detalles.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background-color: #1a202c; color: #a0aec0; padding: 40px 30px; text-align: center;">
+                        <h3 style="color: #00bd4c; font-weight: 700; font-size: 24px; margin: 0 0 15px 0;">Astrafarma</h3>
+                        <p style="font-size: 16px; margin: 0 0 20px 0; color: #cbd5e0;">Tu farmacia de confianza</p>
+                        <p style="font-size: 14px; line-height: 1.6; margin: 20px 0 0 0; padding-top: 20px; border-top: 1px solid #2d3748;">
+                            Gracias por confiar en Astrafarma para cuidar tu salud y la de tu familia.<br>
+                            Este correo es informativo, por favor no respondas directamente a este mensaje.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

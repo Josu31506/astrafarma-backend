@@ -24,7 +24,7 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
