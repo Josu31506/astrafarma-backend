@@ -9,199 +9,72 @@
 <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; padding: 20px;">
     <tr>
         <td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); overflow: hidden;">
 
                 <!-- Header -->
                 <tr>
-                    <td style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); padding: 40px 30px; text-align: center;">
-                        <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td align="center">
-                                    <div style="background-color: rgba(255, 255, 255, 0.15); width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px; display: inline-block; vertical-align: middle; text-align: center; line-height: 100px;">
-                                        <span style="font-size: 48px;">🎉</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center">
-                                    <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0;">¡Bienvenido a Astrafarma!</h1>
-                                    <p style="color: rgba(255, 255, 255, 0.9); font-size: 18px; margin: 8px 0 0 0;">Tu cuenta ha sido confirmada exitosamente</p>
-                                </td>
-                            </tr>
-                        </table>
+                    <td style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); padding: 50px 40px; text-align: center;">
+                        <img src="https://birpbybnbejbmhnfxnda.supabase.co/storage/v1/object/public/products/icon.png" alt="Astrafarma Logo" style="width: 60px; height: 60px; border-radius: 12px; margin: 0 auto 20px; display: block; background-color: white; padding: 8px; box-sizing: border-box;" />
+                        <h1 style="color: white; font-size: 32px; font-weight: 700; margin: 0 0 10px 0;">¡Bienvenido <span th:text="${name}">Usuario</span>!</h1>
+                        <p style="color: rgba(255, 255, 255, 0.9); font-size: 18px; margin: 0;">Tu cuenta ha sido confirmada exitosamente</p>
                     </td>
                 </tr>
 
-                <!-- Content -->
+                <!-- Main Content -->
                 <tr>
-                    <td style="padding: 40px 30px;">
-                        <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td align="center">
-                                    <h2 style="font-size: 24px; font-weight: 600; color: #1a202c; margin: 0 0 20px 0; text-align: center;">
-                                        ¡Hola <span th:text="${name}">Usuario</span>! ⭐
-                                    </h2>
+                    <td style="padding: 50px 40px 30px 40px; text-align: center;">
+                        <h2 style="color: #2d3748; font-size: 28px; font-weight: 600; margin: 0 0 20px 0;">
+                            ¡Ya eres parte de la familia Astrafarma! 🎉🎉🎉
+                        </h2>
 
-                                    <p style="color: #4a5568; font-size: 16px; line-height: 1.7; margin: 0 0 30px 0; text-align: center;">
-                                        <strong>¡Felicidades!</strong> Ya formas parte de la familia Astrafarma.
-                                        Estamos muy emocionados de tenerte con nosotros y esperamos poder cuidar
-                                        de tu salud y bienestar de la mejor manera posible.
-                                    </p>
-                                </td>
-                            </tr>
+                        <p style="color: #4a5568; font-size: 18px; line-height: 1.6; margin: 0 0 40px 0; max-width: 450px; margin-left: auto; margin-right: auto;">
+                            Estamos muy emocionados de tenerte con nosotros. Ahora podrás acceder a nuestra plataforma y mantenerte informado sobre nuestras mejores ofertas.
+                        </p>
 
-                            <!-- Benefits Section -->
-                            <tr>
-                                <td>
-                                    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; margin: 30px 0;">
-                                        <tr>
-                                            <td style="padding: 30px;">
-                                                <h3 style="text-align: center; color: #2d3748; font-size: 20px; font-weight: 700; margin: 0 0 25px 0;">
-                                                    ¿Qué puedes hacer ahora en Astrafarma?
-                                                </h3>
+                        <!-- CTA Button -->
+                        <a th:href="${homeUrl}" style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 18px; display: inline-block; margin: 0 0 50px 0; box-shadow: 0 4px 15px rgba(0, 189, 76, 0.3);">
+                            Explorar productos 👆
+                        </a>
+                    </td>
+                </tr>
 
-                                                <!-- Benefits Grid -->
-                                                <table width="100%" cellpadding="0" cellspacing="0">
-                                                    <!-- Row 1 -->
-                                                    <tr>
-                                                        <td width="50%" style="padding: 0 10px 20px 0; vertical-align: top;">
-                                                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
-                                                                <tr>
-                                                                    <td style="padding: 24px;">
-                                                                        <div style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 0 16px 0; display: inline-block; text-align: center; line-height: 60px;">
-                                                                            <span style="color: white; font-size: 24px;">📦</span>
-                                                                        </div>
-                                                                        <h4 style="font-weight: 600; color: #2d3748; font-size: 16px; margin: 0 0 8px 0;">Catálogo completo</h4>
-                                                                        <p style="color: #718096; font-size: 14px; line-height: 1.5; margin: 0;">Explora nuestras 16 categorías con más de 1000 productos farmacéuticos disponibles</p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                        <td width="50%" style="padding: 0 0 20px 10px; vertical-align: top;">
-                                                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
-                                                                <tr>
-                                                                    <td style="padding: 24px;">
-                                                                        <div style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 0 16px 0; display: inline-block; text-align: center; line-height: 60px;">
-                                                                            <span style="color: white; font-size: 24px;">💬</span>
-                                                                        </div>
-                                                                        <h4 style="font-weight: 600; color: #2d3748; font-size: 16px; margin: 0 0 8px 0;">Conexión WhatsApp</h4>
-                                                                        <p style="color: #718096; font-size: 14px; line-height: 1.5; margin: 0;">Consulta disponibilidad y realiza pedidos directamente a través de WhatsApp</p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                    <!-- Row 2 -->
-                                                    <tr>
-                                                        <td width="50%" style="padding: 0 10px 0 0; vertical-align: top;">
-                                                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
-                                                                <tr>
-                                                                    <td style="padding: 24px;">
-                                                                        <div style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 0 16px 0; display: inline-block; text-align: center; line-height: 60px;">
-                                                                            <span style="color: white; font-size: 24px;">🎁</span>
-                                                                        </div>
-                                                                        <h4 style="font-weight: 600; color: #2d3748; font-size: 16px; margin: 0 0 8px 0;">Ofertas especiales</h4>
-                                                                        <p style="color: #718096; font-size: 14px; line-height: 1.5; margin: 0;">Accede a promociones y descuentos exclusivos para usuarios registrados</p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                        <td width="50%" style="padding: 0 0 0 10px; vertical-align: top;">
-                                                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
-                                                                <tr>
-                                                                    <td style="padding: 24px;">
-                                                                        <div style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); width: 60px; height: 60px; border-radius: 15px; margin: 0 0 16px 0; display: inline-block; text-align: center; line-height: 60px;">
-                                                                            <span style="color: white; font-size: 24px;">🔍</span>
-                                                                        </div>
-                                                                        <h4 style="font-weight: 600; color: #2d3748; font-size: 16px; margin: 0 0 8px 0;">Búsqueda avanzada</h4>
-                                                                        <p style="color: #718096; font-size: 14px; line-height: 1.5; margin: 0;">Encuentra rápidamente los productos que necesitas con nuestro sistema de filtros</p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
+                <!-- Benefits Section -->
+                <tr>
+                    <td style="padding: 0 40px 40px 40px;">
+                        <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 40px; text-align: center; border: 2px solid #e2e8f0;">
+                            <div style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 25px; display: inline-block; text-align: center; line-height: 70px;">
+                                <span style="color: white; font-size: 28px;">🎁</span>
+                            </div>
+                            <h3 style="color: #2d3748; font-size: 24px; font-weight: 600; margin: 0 0 15px 0;">
+                                ¡Ofertas exclusivas para ti!
+                            </h3>
+                            <p style="color: #718096; font-size: 18px; margin: 0 0 25px 0; line-height: 1.6;">
+                                Como usuario registrado, recibirás notificaciones sobre nuestras mejores promociones y descuentos especiales.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
 
-                            <!-- Stats Section -->
-                            <tr>
-                                <td>
-                                    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; margin: 30px 0;">
-                                        <tr>
-                                            <td style="padding: 30px; color: white; text-align: center;">
-                                                <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 25px 0;">Astrafarma en números</h3>
-
-                                                <table width="100%" cellpadding="0" cellspacing="0">
-                                                    <tr>
-                                                        <td width="33.33%" align="center" style="padding: 0 10px;">
-                                                            <div style="font-size: 32px; font-weight: 700; margin: 0 0 5px 0; color: #ffd700;">16</div>
-                                                            <p style="font-size: 14px; margin: 0; opacity: 0.9;">Categorías de productos</p>
-                                                        </td>
-                                                        <td width="33.33%" align="center" style="padding: 0 10px;">
-                                                            <div style="font-size: 32px; font-weight: 700; margin: 0 0 5px 0; color: #ffd700;">1000+</div>
-                                                            <p style="font-size: 14px; margin: 0; opacity: 0.9;">Productos en vitrina</p>
-                                                        </td>
-                                                        <td width="33.33%" align="center" style="padding: 0 10px;">
-                                                            <div style="font-size: 32px; font-weight: 700; margin: 0 0 5px 0; color: #ffd700;">100%</div>
-                                                            <p style="font-size: 14px; margin: 0; opacity: 0.9;">Productos verificados</p>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- CTA Section -->
-                            <tr>
-                                <td>
-                                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f7fafc; border-radius: 12px; margin: 30px 0;">
-                                        <tr>
-                                            <td style="padding: 30px; text-align: center;">
-                                                <h3 style="color: #2d3748; font-size: 18px; font-weight: 600; margin: 0 0 15px 0;">¡Comienza a explorar!</h3>
-                                                <a th:href="${homeUrl}"
-                                                   style="background: linear-gradient(135deg, #00bd4c 0%, #17A15B 100%); color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                                                    🛒 Ir a la tienda
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Support Info -->
-                            <tr>
-                                <td>
-                                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #edf2f7; border-left: 4px solid #00bd4c; border-radius: 0 8px 8px 0; margin: 30px 0;">
-                                        <tr>
-                                            <td style="padding: 20px;">
-                                                <h4 style="color: #2d3748; font-weight: 600; margin: 0 0 10px 0;">¿Necesitas ayuda?</h4>
-                                                <p style="color: #4a5568; font-size: 14px; margin: 0;">
-                                                    Si tienes alguna pregunta sobre nuestros productos o necesitas consultar disponibilidad,
-                                                    puedes contactarnos a través de WhatsApp desde cualquier producto en nuestra plataforma.
-                                                </p>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+                <!-- Support Info -->
+                <tr>
+                    <td style="padding: 0 40px 40px 40px;">
+                        <div style="background-color: #f0fff4; border-left: 4px solid #00bd4c; border-radius: 0 12px 12px 0; padding: 25px;">
+                            <h4 style="color: #2d3748; font-weight: 600; margin: 0 0 12px 0; font-size: 18px;">💬 ¿Necesitas ayuda?</h4>
+                            <p style="color: #4a5568; font-size: 16px; margin: 0; line-height: 1.5;">
+                                Puedes consultar disponibilidad y realizar pedidos directamente a través de WhatsApp desde cualquier producto en nuestra plataforma.
+                            </p>
+                        </div>
                     </td>
                 </tr>
 
                 <!-- Footer -->
                 <tr>
-                    <td style="background-color: #1a202c; color: #a0aec0; padding: 40px 30px; text-align: center;">
+                    <td style="background-color: #2d3748; padding: 40px; text-align: center; border-radius: 0 0 12px 12px;">
                         <h3 style="color: #00bd4c; font-weight: 700; font-size: 24px; margin: 0 0 15px 0;">Astrafarma</h3>
-                        <p style="font-size: 16px; margin: 0 0 20px 0; color: #cbd5e0;">Tu farmacia de confianza</p>
-                        <p style="font-size: 14px; line-height: 1.6; margin: 20px 0 0 0; padding-top: 20px; border-top: 1px solid #2d3748;">
+                        <p style="color: #cbd5e0; font-size: 16px; margin: 0 0 20px 0;">Tu farmacia de confianza 💊</p>
+                        <p style="color: #a0aec0; font-size: 14px; line-height: 1.6; margin: 20px 0 0 0; padding-top: 20px; border-top: 1px solid #4a5568;">
                             Gracias por confiar en nosotros para cuidar tu salud y la de tu familia.<br>
-                            Este correo es informativo, por favor no respondas directamente a este mensaje.
+                            <span style="font-size: 12px;">Este correo es informativo, por favor no respondas directamente a este mensaje.</span>
                         </p>
                     </td>
                 </tr>
