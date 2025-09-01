@@ -118,9 +118,11 @@ public class DataInitializer implements CommandLineRunner {
                 throw new RuntimeException("El archivo Excel no tiene fila de cabeceras");
             }
 
-            int nameColumnIndex = findColumnIndex(headerRow, "NOMBRE PRODUCTO*");
-            int priceColumnIndex = findColumnIndex(headerRow, "PRECIO DE VENTA*");
+            int nameColumnIndex = findColumnIndex(headerRow, "NOMBRE PRODUCTO");
+            int descColumnIndex = findColumnIndex(headerRow, "DESCRIPCION");
+            int priceColumnIndex = findColumnIndex(headerRow, "PRECIO DE VENTA");
             int categoryColumnIndex = findColumnIndex(headerRow, "CATEGORIA COMERCIAL");
+            int imageUrlColumnIndex = findColumnIndex(headerRow, "URL DE IMAGEN");
 
             if (nameColumnIndex == -1 || priceColumnIndex == -1 || categoryColumnIndex == -1) {
                 throw new RuntimeException("No se encontraron todas las columnas requeridas en el Excel");
@@ -131,7 +133,7 @@ public class DataInitializer implements CommandLineRunner {
                 if (row == null) continue;
 
                 try {
-                    Product product = createProductFromRow(row, nameColumnIndex, priceColumnIndex, categoryColumnIndex);
+                    Product product = createProductFromRow(row, nameColumnIndex, descColumnIndex, priceColumnIndex, categoryColumnIndex, imageUrlColumnIndex);
                     if (product != null) {
                         products.add(product);
                     }
@@ -162,7 +164,7 @@ public class DataInitializer implements CommandLineRunner {
         return -1;
     }
 
-    private Product createProductFromRow(Row row, int nameIndex, int priceIndex, int categoryIndex) {
+    private Product createProductFromRow(Row row, int nameIndex, int descIndex, int priceIndex, int categoryIndex, int imageUrlIndex) {
         String name = getCellValueAsString(row.getCell(nameIndex));
         if (name == null || name.trim().isEmpty()) {
             return null;
@@ -177,14 +179,21 @@ public class DataInitializer implements CommandLineRunner {
         String categoryStr = getCellValueAsString(row.getCell(categoryIndex));
         ProductCategory category = mapToProductCategory(categoryStr);
 
+        String description = (descIndex != -1) ? getCellValueAsString(row.getCell(descIndex)) : null;
+        if (description == null || description.trim().isEmpty()) {
+            description = ".";
+        }
+
+        String imageUrl = (imageUrlIndex != -1) ? getCellValueAsString(row.getCell(imageUrlIndex)) : "";
+
         Product product = new Product();
         product.setName(name.trim());
         product.setPrice(price);
         product.setCategory(category);
+        product.setDescription(description);
+        product.setImageUrl(imageUrl);
 
-        product.setDescription(getRandomDescription());
-
-        logger.debug("Creado producto: {} - ${} - {}", name, price, category);
+        logger.debug("Creado producto: {} - ${} - {} - desc: {} - img: {}", name, price, category, description, imageUrl);
 
         return product;
     }
@@ -231,40 +240,6 @@ public class DataInitializer implements CommandLineRunner {
         }
         String category = categoryStr.trim();
         String categoryLower = category.toLowerCase();
-
-        if (category.equalsIgnoreCase("CUIDADO PERSONAL E HIGIENE")) {
-            return ProductCategory.CUIDADO_PERSONAL_HIGIENE;
-        } else if (category.equalsIgnoreCase("VITAMINAS Y SUPLEMENTOS")) {
-            return ProductCategory.VITAMINAS_SUPLEMENTOS_NUTRICIONALES;
-        } else if (category.equalsIgnoreCase("RESPIRATORIOS Y EXPECTORANTES")) {
-            return ProductCategory.RESPIRATORIOS_EXPECTORANTES;
-        } else if (category.equalsIgnoreCase("ANTIBIÓTICOS Y ANTIVIRALES")) {
-            return ProductCategory.ANTIBIOTICOS_ANTIVIRALES;
-        } else if (category.equalsIgnoreCase("DERMATOLÓGICOS Y TRATAMIENTOS CUTÁNEOS")) {
-            return ProductCategory.DERMATOLOGICOS_TRATAMIENTOS_CUTANEOS;
-        } else if (category.equalsIgnoreCase("ANALGÉSICOS Y ANTIINFLAMATORIOS")) {
-            return ProductCategory.ANALGESICOS_ANTINFLAMATORIOS;
-        } else if (category.equalsIgnoreCase("MATERIAL MÉDICO Y EQUIPOS")) {
-            return ProductCategory.MATERIAL_MEDICO_EQUIPOS;
-        } else if (category.equalsIgnoreCase("MEDICINA NATURAL Y HIDRATACIÓN")) {
-            return ProductCategory.MEDICINA_NATURAL_HIDRATACION;
-        } else if (category.equalsIgnoreCase("PEDIÁTRICOS Y LACTANCIA")) {
-            return ProductCategory.PEDIATRICOS_LACTANCIA;
-        } else if (category.equalsIgnoreCase("GASTROINTESTINALES Y DIGESTIVOS")) {
-            return ProductCategory.GASTROINTESTINALES_DIGESTIVOS;
-        } else if (category.equalsIgnoreCase("GINECOLÓGICOS Y UROLÓGICOS")) {
-            return ProductCategory.GINECOLOGICOS_UROLOGICOS;
-        } else if (category.equalsIgnoreCase("CARDIOVASCULARES Y ANTIDIABÉTICOS")) {
-            return ProductCategory.CARDIOVASCULARES_ANTIDIABETICOS;
-        } else if (category.equalsIgnoreCase("OFTALMOLÓGICOS")) {
-            return ProductCategory.OFTALMOLOGICOS;
-        } else if (category.equalsIgnoreCase("ANTIHISTAMÍNICOS Y ANTIALÉRGICOS")) {
-            return ProductCategory.ANTIHISTAMINICOS_ANTIALERGICOS;
-        } else if (category.equalsIgnoreCase("NEUROLÓGICOS Y PSIQUIÁTRICOS")) {
-            return ProductCategory.NEUROLOGICOS_PSIQUIATRICOS;
-        } else if (category.equalsIgnoreCase("OTROS")) {
-            return ProductCategory.OTROS;
-        }
 
         if (categoryLower.contains("cuidado personal") || categoryLower.contains("higiene")) {
             return ProductCategory.CUIDADO_PERSONAL_HIGIENE;

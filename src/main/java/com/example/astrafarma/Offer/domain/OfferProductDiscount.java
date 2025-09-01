@@ -23,5 +23,5 @@ public class OfferProductDiscount {
     private Product product;
 
     @Column(name = "discount_percentage")
-    private int discountPercentage; // ej: 15 = 15%
+    private int discountPercentage;
 }

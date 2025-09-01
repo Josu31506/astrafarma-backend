@@ -34,6 +34,7 @@ public class OfferController {
     ) throws Exception {
         return offerService.createOffer(dto, image);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
     public OfferDTO updateOfferWithImage(

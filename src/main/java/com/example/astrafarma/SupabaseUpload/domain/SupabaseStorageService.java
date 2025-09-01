@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.OutputStream;
@@ -25,7 +26,9 @@ public class SupabaseStorageService {
     @Value("${SUPABASE_BUCKET_OFFER}")
     private String bucketOffer;
 
-    // Subir imagen, retorna URL pública
+    @Value("${SUPABASE_BUCKET_EXCEL}")
+    private String bucketExcel;
+
     public UploadResponseDTO uploadImage(MultipartFile file, boolean isProduct) throws Exception {
         String bucket = isProduct ? bucketProduct : bucketOffer;
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -65,6 +68,36 @@ public class SupabaseStorageService {
         int responseCode = conn.getResponseCode();
         if (responseCode != 200 && responseCode != 204) {
             throw new RuntimeException("Error deleting from Supabase: " + responseCode);
+        }
+    }
+
+    public String uploadProductExcel(byte[] excelBytes, String originalFilename) throws Exception {
+        String bucket = bucketExcel;
+        String uploadUrl = supabaseUrl + "/storage/v1/object/" + bucket + "/" + originalFilename;
+
+        URL url = new URL(uploadUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("PUT");
+        conn.setRequestProperty("Authorization", "Bearer " + supabaseApiKey);
+        conn.setRequestProperty("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        conn.setDoOutput(true);
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(excelBytes);
+        }
+
+        int responseCode = conn.getResponseCode();
+
+        if (responseCode == 200 || responseCode == 201) {
+            String publicUrl = supabaseUrl + "/storage/v1/object/public/" + bucket + "/" + originalFilename;
+            return publicUrl;
+        } else {
+            InputStream errorStream = conn.getErrorStream();
+            String errorMsg = "";
+            if (errorStream != null) {
+                errorMsg = new String(errorStream.readAllBytes());
+            }
+            throw new RuntimeException("Error uploading to Supabase: " + responseCode + " - " + errorMsg);
         }
     }
 }
