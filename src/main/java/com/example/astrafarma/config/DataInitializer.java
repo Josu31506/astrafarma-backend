@@ -43,11 +43,11 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${admin.email}")
+    @Value("${admin_email}")
     private String adminEmail;
-    @Value("${admin.password}")
+    @Value("${admin_password}")
     private String adminPassword;
-    @Value("${admin.fullname:Administrador}")
+    @Value("${admin_fullname:Administrador}")
     private String adminFullName;
 
     private final RestTemplate restTemplate = new RestTemplate();
