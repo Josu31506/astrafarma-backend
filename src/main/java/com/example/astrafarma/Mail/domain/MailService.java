@@ -31,7 +31,7 @@ public class MailService {
     @Value("${mail.oauth.from}")
     private String mailFrom;
 
-    @Value("${frontend.base.url}")
+    @Value("${frontend_base_url}")
     private String frontendBaseUrl;
 
     public void sendWelcomeMail(String to, String name) throws Exception {
