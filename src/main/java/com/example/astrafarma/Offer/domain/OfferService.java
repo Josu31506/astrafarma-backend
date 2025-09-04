@@ -14,9 +14,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OfferService {
@@ -121,6 +122,12 @@ public class OfferService {
                             ProductDiscountDTO dto = new ProductDiscountDTO();
                             dto.setProductId(d.getProduct().getId());
                             dto.setDiscountPercentage(d.getDiscountPercentage());
+
+                            BigDecimal price = d.getProduct().getPrice();
+                            BigDecimal discountFraction = BigDecimal.valueOf(d.getDiscountPercentage())
+                                    .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+                            BigDecimal discounted = price.subtract(price.multiply(discountFraction));
+                            dto.setDiscountedPrice(discounted);
                             return dto;
                         })
                 ).collect(Collectors.toList());
