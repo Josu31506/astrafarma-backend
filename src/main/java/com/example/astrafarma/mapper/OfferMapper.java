@@ -9,6 +9,8 @@ import com.example.astrafarma.Product.repository.ProductRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,12 @@ public abstract class OfferMapper {
             ProductDiscountDTO dto = new ProductDiscountDTO();
             dto.setProductId(d.getProduct().getId());
             dto.setDiscountPercentage(d.getDiscountPercentage());
+
+            BigDecimal price = d.getProduct().getPrice();
+            BigDecimal discountFraction = BigDecimal.valueOf(d.getDiscountPercentage())
+                    .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+            BigDecimal discounted = price.subtract(price.multiply(discountFraction));
+            dto.setDiscountedPrice(discounted);
             return dto;
         }).collect(Collectors.toList());
     }
