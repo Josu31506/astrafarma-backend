@@ -9,7 +9,6 @@ import com.example.astrafarma.Offer.repository.OfferRepository;
 import com.example.astrafarma.SupabaseUpload.domain.SupabaseStorageService;
 import com.example.astrafarma.SupabaseUpload.dto.UploadResponseDTO;
 import com.example.astrafarma.exception.OfferNotFoundException;
-import com.example.astrafarma.exception.ResourceNotFoundException;
 import com.example.astrafarma.Offer.domain.OfferProductDiscount;
 import com.example.astrafarma.mapper.OfferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,6 @@ public class OfferService {
         // Load and validate products
         List<Product> products = productRepository.findAllById(dto.getProductIds());
         if (products.size() != dto.getProductIds().size()) {
-            throw new ResourceNotFoundException("Uno o más productos no encontrados");
         }
         offer.setProducts(products);
 
@@ -68,8 +66,6 @@ public class OfferService {
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findById(discountDTO.getProductId())
-                        .orElseThrow(() -> new ResourceNotFoundException(
                                 "Producto no encontrado con id: " + discountDTO.getProductId()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
@@ -112,7 +108,7 @@ public class OfferService {
         if (dto.getProductIds() != null) {
             List<Product> products = productRepository.findAllById(dto.getProductIds());
             if (products.size() != dto.getProductIds().size()) {
-                throw new ResourceNotFoundException("Uno o más productos no encontrados");
+
             }
             offer.setProducts(products);
         }
@@ -120,7 +116,7 @@ public class OfferService {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
                 Product product = productRepository.findById(discountDTO.getProductId())
-                        .orElseThrow(() -> new ResourceNotFoundException(
+
                                 "Producto no encontrado con id: " + discountDTO.getProductId()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
