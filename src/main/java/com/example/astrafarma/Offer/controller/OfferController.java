@@ -3,6 +3,7 @@ package com.example.astrafarma.Offer.controller;
 import com.example.astrafarma.Offer.dto.OfferDTO;
 import com.example.astrafarma.Offer.domain.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,13 @@ public class OfferController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(consumes = {"multipart/form-data"})
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OfferDTO createOffer(@RequestBody OfferDTO dto) throws Exception {
+        return offerService.createOffer(dto, null);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public OfferDTO createOfferWithImage(
             @RequestPart("data") OfferDTO dto,
             @RequestPart(value = "image", required = false) MultipartFile image
@@ -36,7 +43,16 @@ public class OfferController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OfferDTO updateOffer(
+            @PathVariable Long id,
+            @RequestBody OfferDTO dto
+    ) throws Exception {
+        return offerService.updateOffer(id, dto, null);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public OfferDTO updateOfferWithImage(
             @PathVariable Long id,
             @RequestPart("data") OfferDTO dto,
