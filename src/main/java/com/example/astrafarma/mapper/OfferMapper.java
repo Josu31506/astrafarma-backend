@@ -5,9 +5,7 @@ import com.example.astrafarma.Offer.domain.OfferProductDiscount;
 import com.example.astrafarma.Offer.dto.OfferDTO;
 import com.example.astrafarma.Offer.dto.ProductDiscountDTO;
 import com.example.astrafarma.Product.domain.Product;
-import com.example.astrafarma.Product.repository.ProductRepository;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,15 +15,13 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class OfferMapper {
-    @Autowired
-    protected ProductRepository productRepository;
 
     @Mapping(target = "productIds", source = "products", qualifiedByName = "productsToIds")
     @Mapping(target = "discounts", source = "discounts", qualifiedByName = "discountsToDTOs")
     public abstract OfferDTO offerToOfferDTO(Offer offer);
 
     @Mapping(target = "products", ignore = true)
-    @Mapping(target = "discounts", source = "discounts", qualifiedByName = "discountsToEntities")
+    @Mapping(target = "discounts", ignore = true)
     public abstract Offer offerDTOToOffer(OfferDTO dto);
 
     @Named("productsToIds")
@@ -47,17 +43,6 @@ public abstract class OfferMapper {
             BigDecimal discounted = price.subtract(price.multiply(discountFraction));
             dto.setDiscountedPrice(discounted);
             return dto;
-        }).collect(Collectors.toList());
-    }
-
-    @Named("discountsToEntities")
-    public List<OfferProductDiscount> discountsToEntities(List<ProductDiscountDTO> dtos) {
-        if (dtos == null) return new ArrayList<>();
-        return dtos.stream().map(dto -> {
-            OfferProductDiscount entity = new OfferProductDiscount();
-            entity.setProduct(productRepository.findById(dto.getProductId()).orElse(null));
-            entity.setDiscountPercentage(dto.getDiscountPercentage());
-            return entity;
         }).collect(Collectors.toList());
     }
 }

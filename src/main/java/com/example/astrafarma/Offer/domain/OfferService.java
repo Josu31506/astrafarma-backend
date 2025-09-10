@@ -3,11 +3,14 @@ package com.example.astrafarma.Offer.domain;
 import com.example.astrafarma.Mail.events.OffersPublishedEvent;
 import com.example.astrafarma.Offer.dto.OfferDTO;
 import com.example.astrafarma.Offer.dto.ProductDiscountDTO;
+import com.example.astrafarma.Product.domain.Product;
 import com.example.astrafarma.Product.repository.ProductRepository;
 import com.example.astrafarma.Offer.repository.OfferRepository;
 import com.example.astrafarma.SupabaseUpload.domain.SupabaseStorageService;
 import com.example.astrafarma.SupabaseUpload.dto.UploadResponseDTO;
 import com.example.astrafarma.exception.OfferNotFoundException;
+import com.example.astrafarma.exception.InvalidProductException;
+import com.example.astrafarma.Offer.domain.OfferProductDiscount;
 import com.example.astrafarma.mapper.OfferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,14 +56,41 @@ public class OfferService {
 
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
-        offer.setProducts(productRepository.findAllById(dto.getProductIds()));
-        if (offer.getDiscounts() != null) {
-            offer.getDiscounts().forEach(d -> d.setOffer(offer));
+
+        // Load and validate products
+        List<Product> products = productRepository.findAllById(dto.getProductIds());
+        if (products.size() != dto.getProductIds().size()) {
+            List<Long> foundIds = products.stream().map(Product::getId).collect(Collectors.toList());
+            List<Long> missing = dto.getProductIds().stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .collect(Collectors.toList());
+            throw new InvalidProductException("Productos no encontrados: " + missing);
         }
+        offer.setProducts(products);
+
+        // Map discounts ensuring each product exists
+        if (dto.getDiscounts() != null) {
+            List<OfferProductDiscount> discounts = new ArrayList<>();
+            for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
+                Product product = products.stream()
+                        .filter(p -> p.getId().equals(discountDTO.getProductId()))
+                        .findFirst()
+                        .orElseThrow(() -> new InvalidProductException(
+                                "Producto no encontrado con id: " + discountDTO.getProductId()));
+                OfferProductDiscount discount = new OfferProductDiscount();
+                discount.setOffer(offer);
+                discount.setProduct(product);
+                discount.setDiscountPercentage(discountDTO.getDiscountPercentage());
+                discounts.add(discount);
+            }
+            offer.setDiscounts(discounts);
+        }
+
         if (image != null && !image.isEmpty()) {
             UploadResponseDTO img = supabaseStorage.uploadImage(image, false);
             offer.setImageUrl(img.getUrl());
         }
+
         Offer saved = offerRepository.save(offer);
         return offerMapper.offerToOfferDTO(saved);
     }
@@ -85,14 +116,25 @@ public class OfferService {
             offer.setEndDate(dto.getEndDate());
         }
         if (dto.getProductIds() != null) {
-            offer.setProducts(productRepository.findAllById(dto.getProductIds()));
+            List<Product> products = productRepository.findAllById(dto.getProductIds());
+            if (products.size() != dto.getProductIds().size()) {
+                List<Long> foundIds = products.stream().map(Product::getId).collect(Collectors.toList());
+                List<Long> missing = dto.getProductIds().stream()
+                        .filter(id -> !foundIds.contains(id))
+                        .collect(Collectors.toList());
+                throw new InvalidProductException("Productos no encontrados: " + missing);
+            }
+            offer.setProducts(products);
         }
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
+                Product product = productRepository.findById(discountDTO.getProductId())
+                        .orElseThrow(() -> new InvalidProductException(
+                                "Producto no encontrado con id: " + discountDTO.getProductId()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
-                discount.setProduct(productRepository.findById(discountDTO.getProductId()).orElse(null));
+                discount.setProduct(product);
                 discount.setDiscountPercentage(discountDTO.getDiscountPercentage());
                 offer.getDiscounts().add(discount);
             }
