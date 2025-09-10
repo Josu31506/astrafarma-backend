@@ -9,7 +9,6 @@ import com.example.astrafarma.Offer.repository.OfferRepository;
 import com.example.astrafarma.SupabaseUpload.domain.SupabaseStorageService;
 import com.example.astrafarma.SupabaseUpload.dto.UploadResponseDTO;
 import com.example.astrafarma.exception.OfferNotFoundException;
-import com.example.astrafarma.exception.InvalidProductException;
 import com.example.astrafarma.Offer.domain.OfferProductDiscount;
 import com.example.astrafarma.mapper.OfferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +59,6 @@ public class OfferService {
         // Load and validate products
         List<Product> products = productRepository.findAllById(dto.getProductIds());
         if (products.size() != dto.getProductIds().size()) {
-            List<Long> foundIds = products.stream().map(Product::getId).collect(Collectors.toList());
-            List<Long> missing = dto.getProductIds().stream()
-                    .filter(id -> !foundIds.contains(id))
-                    .collect(Collectors.toList());
-            throw new InvalidProductException("Productos no encontrados: " + missing);
         }
         offer.setProducts(products);
 
@@ -72,10 +66,6 @@ public class OfferService {
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = products.stream()
-                        .filter(p -> p.getId().equals(discountDTO.getProductId()))
-                        .findFirst()
-                        .orElseThrow(() -> new InvalidProductException(
                                 "Producto no encontrado con id: " + discountDTO.getProductId()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
@@ -118,11 +108,7 @@ public class OfferService {
         if (dto.getProductIds() != null) {
             List<Product> products = productRepository.findAllById(dto.getProductIds());
             if (products.size() != dto.getProductIds().size()) {
-                List<Long> foundIds = products.stream().map(Product::getId).collect(Collectors.toList());
-                List<Long> missing = dto.getProductIds().stream()
-                        .filter(id -> !foundIds.contains(id))
-                        .collect(Collectors.toList());
-                throw new InvalidProductException("Productos no encontrados: " + missing);
+
             }
             offer.setProducts(products);
         }
@@ -130,7 +116,7 @@ public class OfferService {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
                 Product product = productRepository.findById(discountDTO.getProductId())
-                        .orElseThrow(() -> new InvalidProductException(
+
                                 "Producto no encontrado con id: " + discountDTO.getProductId()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
