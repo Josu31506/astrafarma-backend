@@ -69,18 +69,6 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info("Iniciando carga de datos desde Excel...");
 
-        if (productRepository.count() > 0) {
-            logger.info("Ya existen productos en la base de datos. Saltando inicialización.");
-            return;
-        }
-
-        try {
-            loadProductsFromExcel();
-            logger.info("Carga de datos completada exitosamente");
-        } catch (Exception e) {
-            logger.error("Error al cargar datos desde Excel: {}", e.getMessage(), e);
-        }
-
         if (userRepository.findByEmail(adminEmail).isEmpty()) {
             User admin = new User();
             admin.setFullName(adminFullName);
@@ -97,6 +85,17 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Usuario admin creado con email {}", adminEmail);
         } else {
             logger.info("Usuario admin ya existe (email {})", adminEmail);
+        }
+
+        if (productRepository.count() == 0) {
+            try {
+                loadProductsFromExcel();
+                logger.info("Carga de datos completada exitosamente");
+            } catch (Exception e) {
+                logger.error("Error al cargar datos desde Excel: {}", e.getMessage(), e);
+            }
+        } else {
+            logger.info("Ya existen productos en la base de datos. Saltando inicialización.");
         }
     }
 
