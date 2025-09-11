@@ -122,7 +122,7 @@ public class OfferService {
                         .map(Product::getId)
                         .collect(Collectors.toList());
                 List<Long> missingIds = dto.getProductIds().stream()
-                        .filter(id -> !existingIds.contains(id))
+                        .filter(productId -> !existingIds.contains(productId))
                         .collect(Collectors.toList());
                 throw new InvalidProductException("Productos no encontrados: " + missingIds);
             }
