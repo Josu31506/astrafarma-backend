@@ -57,15 +57,14 @@ public class OfferService {
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
-        // Load and validate products
-        List<Product> products = productRepository.findAllById(dto.getProductIds());
-        if (products.size() != dto.getProductIds().size()) {
-            List<Long> existingIds = products.stream()
-                    .map(Product::getId)
-                    .collect(Collectors.toList());
-            List<Long> missingIds = dto.getProductIds().stream()
-                    .filter(id -> !existingIds.contains(id))
-                    .collect(Collectors.toList());
+        // Load and validate products individually to avoid duplicate/size issues
+        List<Product> products = new ArrayList<>();
+        List<Long> missingIds = new ArrayList<>();
+        for (Long productId : dto.getProductIds()) {
+            productRepository.findById(productId)
+                    .ifPresentOrElse(products::add, () -> missingIds.add(productId));
+        }
+        if (!missingIds.isEmpty()) {
             throw new InvalidProductException("Productos no encontrados: " + missingIds);
         }
         offer.setProducts(products);
@@ -116,16 +115,15 @@ public class OfferService {
             offer.setEndDate(dto.getEndDate());
         }
         if (dto.getProductIds() != null) {
-            List<Product> products = productRepository.findAllById(dto.getProductIds());
-            if (products.size() != dto.getProductIds().size()) {
-                List<Long> existingIds = products.stream()
-                        .map(Product::getId)
-                        .collect(Collectors.toList());
-                List<Long> missingIds = dto.getProductIds().stream()
-                        .filter(productId -> !existingIds.contains(productId))
-                        .collect(Collectors.toList());
-                throw new InvalidProductException("Productos no encontrados: " + missingIds);
+            List<Product> products = new ArrayList<>();
+            List<Long> missingIds = new ArrayList<>();
+            for (Long productId : dto.getProductIds()) {
+                 productRepository.findById(productId)
+                 .ifPresentOrElse(products::add, () -> missingIds.add(productId));
             }
+            if (!missingIds.isEmpty()) {
+           throw new InvalidProductException("Productos no encontrados: " + missingIds);
+             }
             offer.setProducts(products);
         }
         if (dto.getDiscounts() != null) {
