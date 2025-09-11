@@ -118,12 +118,12 @@ public class OfferService {
             List<Product> products = new ArrayList<>();
             List<Long> missingIds = new ArrayList<>();
             for (Long productId : dto.getProductIds()) {
-                productRepository.findById(productId)
-                        .ifPresentOrElse(products::add, () -> missingIds.add(productId));
+                 productRepository.findById(productId)
+                 .ifPresentOrElse(products::add, () -> missingIds.add(productId));
             }
             if (!missingIds.isEmpty()) {
-                throw new InvalidProductException("Productos no encontrados: " + missingIds);
-            }
+           throw new InvalidProductException("Productos no encontrados: " + missingIds);
+             }
             offer.setProducts(products);
         }
         if (dto.getDiscounts() != null) {
