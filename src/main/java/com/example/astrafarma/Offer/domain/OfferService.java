@@ -114,6 +114,7 @@ public class OfferService {
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
+          
         if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
             List<String> missingNames = new ArrayList<>();
