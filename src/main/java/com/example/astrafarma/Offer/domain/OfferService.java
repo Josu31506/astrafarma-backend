@@ -55,8 +55,10 @@ public class OfferService {
 
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
+        if (offer.getMensajeWhatsApp() == null || offer.getMensajeWhatsApp().isBlank()) {
+            throw new IllegalArgumentException("mensajeWhatsApp es requerido");
+        }
 
-        // Validate product names
         List<Product> products = new ArrayList<>();
         List<String> missingNames = new ArrayList<>();
         if (dto.getProductNames() != null) {
@@ -74,7 +76,6 @@ public class OfferService {
         }
         offer.setProducts(products);
 
-        // Map discounts
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
@@ -113,17 +114,19 @@ public class OfferService {
         if (dto.getDescription() != null) {
             offer.setDescription(dto.getDescription());
         }
+        if (dto.getMensajeWhatsApp() != null) {
+            offer.setMensajeWhatsApp(dto.getMensajeWhatsApp());
+        }
         if (dto.getImageUrl() != null) {
             offer.setImageUrl(dto.getImageUrl());
-               }
+        }
         if (dto.getStartDate() != null) {
             offer.setStartDate(dto.getStartDate());
-        }
+               }
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
 
-        // Replace products by name
         if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
             List<String> missingNames = new ArrayList<>();
@@ -141,7 +144,6 @@ public class OfferService {
             offer.setProducts(products);
         }
 
-        // Replace discounts by product name
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {

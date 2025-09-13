@@ -14,6 +14,7 @@ public class OfferDTO {
     private Long id;
     private String title;
     private String description;
+    private String mensajeWhatsApp;
     private String imageUrl;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
