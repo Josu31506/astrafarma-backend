@@ -17,6 +17,6 @@ public class OfferDTO {
     private String imageUrl;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private List<Long> productIds;
+    private List<String> productNames;
     private List<ProductDiscountDTO> discounts;
 }
