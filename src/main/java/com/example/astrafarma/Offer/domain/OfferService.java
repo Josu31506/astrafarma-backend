@@ -53,19 +53,20 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(offer);
     }
 
-
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
-        // Load and validate products individually to avoid duplicate/size issues
+        // Load and validate products individually by name to avoid duplicate/size issues
         List<Product> products = new ArrayList<>();
-        List<Long> missingIds = new ArrayList<>();
-        for (Long productId : dto.getProductIds()) {
-            productRepository.findById(productId)
-                    .ifPresentOrElse(products::add, () -> missingIds.add(productId));
+        List<String> missingNames = new ArrayList<>();
+        if (dto.getProductNames() != null) {
+            for (String productName : dto.getProductNames()) {
+                productRepository.findByName(productName)
+                        .ifPresentOrElse(products::add, () -> missingNames.add(productName));
+            }
         }
-        if (!missingIds.isEmpty()) {
-            throw new InvalidProductException("Productos no encontrados: " + missingIds);
+        if (!missingNames.isEmpty()) {
+            throw new InvalidProductException("Productos no encontrados: " + missingNames);
         }
         offer.setProducts(products);
 
@@ -73,9 +74,9 @@ public class OfferService {
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findById(discountDTO.getProductId())
+                Product product = productRepository.findByName(discountDTO.getProductName())
                         .orElseThrow(() -> new InvalidProductException(
-                                "Producto no encontrado con id: " + discountDTO.getProductId()));
+                                "Producto no encontrado con nombre: " + discountDTO.getProductName()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
                 discount.setProduct(product);
@@ -94,7 +95,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(saved);
     }
 
-
     public OfferDTO updateOffer(Long id, OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException("Oferta no encontrada"));
@@ -104,7 +104,7 @@ public class OfferService {
         }
         if (dto.getDescription() != null) {
             offer.setDescription(dto.getDescription());
-        }
+       
         if (dto.getImageUrl() != null) {
             offer.setImageUrl(dto.getImageUrl());
         }
@@ -114,24 +114,24 @@ public class OfferService {
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
-        if (dto.getProductIds() != null) {
+        if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
-            List<Long> missingIds = new ArrayList<>();
-            for (Long productId : dto.getProductIds()) {
-                 productRepository.findById(productId)
-                 .ifPresentOrElse(products::add, () -> missingIds.add(productId));
+            List<String> missingNames = new ArrayList<>();
+            for (String productName : dto.getProductNames()) {
+                productRepository.findByName(productName)
+                        .ifPresentOrElse(products::add, () -> missingNames.add(productName));
             }
-            if (!missingIds.isEmpty()) {
-           throw new InvalidProductException("Productos no encontrados: " + missingIds);
-             }
+            if (!missingNames.isEmpty()) {
+                throw new InvalidProductException("Productos no encontrados: " + missingNames);
+            }
             offer.setProducts(products);
         }
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findById(discountDTO.getProductId())
+                Product product = productRepository.findByName(discountDTO.getProductName())
                         .orElseThrow(() -> new InvalidProductException(
-                                "Producto no encontrado con id: " + discountDTO.getProductId()));
+                                "Producto no encontrado con nombre: " + discountDTO.getProductName()));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
                 discount.setProduct(product);
@@ -162,7 +162,7 @@ public class OfferService {
                 .flatMap(offer -> offer.getDiscounts().stream()
                         .map(d -> {
                             ProductDiscountDTO dto = new ProductDiscountDTO();
-                            dto.setProductId(d.getProduct().getId());
+                            dto.setProductName(d.getProduct().getName());
                             dto.setDiscountPercentage(d.getDiscountPercentage());
 
                             BigDecimal price = d.getProduct().getPrice();
