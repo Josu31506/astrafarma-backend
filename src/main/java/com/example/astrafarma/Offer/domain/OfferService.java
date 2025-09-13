@@ -56,11 +56,15 @@ public class OfferService {
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
-        // Load and validate products individually by name to avoid duplicate/size issues
+        // Validate product names
         List<Product> products = new ArrayList<>();
         List<String> missingNames = new ArrayList<>();
         if (dto.getProductNames() != null) {
             for (String productName : dto.getProductNames()) {
+                if (productName == null || productName.isBlank()) {
+                    missingNames.add(productName);
+                    continue;
+                }
                 productRepository.findByName(productName)
                         .ifPresentOrElse(products::add, () -> missingNames.add(productName));
             }
@@ -70,13 +74,17 @@ public class OfferService {
         }
         offer.setProducts(products);
 
-        // Map discounts ensuring each product exists
+        // Map discounts
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findByName(discountDTO.getProductName())
+                String productName = discountDTO.getProductName();
+                if (productName == null || productName.isBlank()) {
+                    throw new InvalidProductException("Producto no encontrado con nombre: " + productName);
+                }
+                Product product = productRepository.findByName(productName)
                         .orElseThrow(() -> new InvalidProductException(
-                                "Producto no encontrado con nombre: " + discountDTO.getProductName()));
+                                "Producto no encontrado con nombre: " + productName));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
                 discount.setProduct(product);
@@ -103,23 +111,27 @@ public class OfferService {
             offer.setTitle(dto.getTitle());
         }
         if (dto.getDescription() != null) {
-            // Update description when present
             offer.setDescription(dto.getDescription());
         }
         if (dto.getImageUrl() != null) {
             offer.setImageUrl(dto.getImageUrl());
-        }
+               }
         if (dto.getStartDate() != null) {
             offer.setStartDate(dto.getStartDate());
         }
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
-          
+
+        // Replace products by name
         if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
             List<String> missingNames = new ArrayList<>();
             for (String productName : dto.getProductNames()) {
+                if (productName == null || productName.isBlank()) {
+                    missingNames.add(productName);
+                    continue;
+                }
                 productRepository.findByName(productName)
                         .ifPresentOrElse(products::add, () -> missingNames.add(productName));
             }
@@ -128,12 +140,18 @@ public class OfferService {
             }
             offer.setProducts(products);
         }
+
+        // Replace discounts by product name
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findByName(discountDTO.getProductName())
+                String productName = discountDTO.getProductName();
+                if (productName == null || productName.isBlank()) {
+                    throw new InvalidProductException("Producto no encontrado con nombre: " + productName);
+                }
+                Product product = productRepository.findByName(productName)
                         .orElseThrow(() -> new InvalidProductException(
-                                "Producto no encontrado con nombre: " + discountDTO.getProductName()));
+                                "Producto no encontrado con nombre: " + productName));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
                 discount.setProduct(product);
@@ -141,11 +159,13 @@ public class OfferService {
                 offer.getDiscounts().add(discount);
             }
         }
+
         if (image != null && !image.isEmpty()) {
             supabaseStorage.deleteImage(offer.getImageUrl(), false);
             UploadResponseDTO img = supabaseStorage.uploadImage(image, false);
             offer.setImageUrl(img.getUrl());
         }
+
         Offer updated = offerRepository.save(offer);
         return offerMapper.offerToOfferDTO(updated);
     }
