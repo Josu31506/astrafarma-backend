@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public abstract class OfferMapper {
 
-    @Mapping(target = "productIds", source = "products", qualifiedByName = "productsToIds")
+    @Mapping(target = "productNames", source = "products", qualifiedByName = "productsToNames")
     @Mapping(target = "discounts", source = "discounts", qualifiedByName = "discountsToDTOs")
     public abstract OfferDTO offerToOfferDTO(Offer offer);
 
@@ -24,9 +24,9 @@ public abstract class OfferMapper {
     @Mapping(target = "discounts", ignore = true)
     public abstract Offer offerDTOToOffer(OfferDTO dto);
 
-    @Named("productsToIds")
-    public List<Long> productsToIds(List<Product> products) {
-        return products == null ? null : products.stream().map(Product::getId).collect(Collectors.toList());
+    @Named("productsToNames")
+    public List<String> productsToNames(List<Product> products) {
+        return products == null ? null : products.stream().map(Product::getName).collect(Collectors.toList());
     }
 
     @Named("discountsToDTOs")
@@ -34,7 +34,7 @@ public abstract class OfferMapper {
         if (discounts == null) return new ArrayList<>();
         return discounts.stream().map(d -> {
             ProductDiscountDTO dto = new ProductDiscountDTO();
-            dto.setProductId(d.getProduct().getId());
+            dto.setProductName(d.getProduct().getName());
             dto.setDiscountPercentage(d.getDiscountPercentage());
 
             BigDecimal price = d.getProduct().getPrice();
