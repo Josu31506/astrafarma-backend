@@ -53,7 +53,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(offer);
     }
 
-
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
@@ -96,7 +95,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(saved);
     }
 
-
     public OfferDTO updateOffer(Long id, OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException("Oferta no encontrada"));
@@ -106,7 +104,7 @@ public class OfferService {
         }
         if (dto.getDescription() != null) {
             offer.setDescription(dto.getDescription());
-        }
+       
         if (dto.getImageUrl() != null) {
             offer.setImageUrl(dto.getImageUrl());
         }
