@@ -57,16 +57,21 @@ public class OfferService {
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
-        // Load and validate products
-        List<Product> products = productRepository.findAllById(dto.getProductIds());
-        if (products.size() != dto.getProductIds().size()) {
-            List<Long> existingIds = products.stream()
-                    .map(Product::getId)
-                    .collect(Collectors.toList());
-            List<Long> missingIds = dto.getProductIds().stream()
-                    .filter(id -> !existingIds.contains(id))
-                    .collect(Collectors.toList());
-            throw new InvalidProductException("Productos no encontrados: " + missingIds);
+        // Load and validate products individually by name to avoid duplicate/size issues
+        List<Product> products = new ArrayList<>();
+        List<String> missingNames = new ArrayList<>();
+        if (dto.getProductNames() != null) {
+            for (String productName : dto.getProductNames()) {
+                if (productName == null || productName.isBlank()) {
+                    missingNames.add(productName);
+                    continue;
+                }
+                productRepository.findByName(productName)
+                        .ifPresentOrElse(products::add, () -> missingNames.add(productName));
+            }
+        }
+        if (!missingNames.isEmpty()) {
+            throw new InvalidProductException("Productos no encontrados: " + missingNames);
         }
         offer.setProducts(products);
 
@@ -74,9 +79,13 @@ public class OfferService {
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findById(discountDTO.getProductId())
+                String productName = discountDTO.getProductName();
+                if (productName == null || productName.isBlank()) {
+                    throw new InvalidProductException("Producto no encontrado con nombre: " + productName);
+                }
+                Product product = productRepository.findByName(productName)
                         .orElseThrow(() -> new InvalidProductException(
-                                "Producto no encontrado con id: " + discountDTO.getProductId()));
+                                "Producto no encontrado con nombre: " + productName));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
                 discount.setProduct(product);
@@ -104,6 +113,7 @@ public class OfferService {
             offer.setTitle(dto.getTitle());
         }
         if (dto.getDescription() != null) {
+            // Update description when present
             offer.setDescription(dto.getDescription());
         }
         if (dto.getImageUrl() != null) {
@@ -115,25 +125,33 @@ public class OfferService {
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
-        if (dto.getProductIds() != null) {
-            List<Product> products = productRepository.findAllById(dto.getProductIds());
-            if (products.size() != dto.getProductIds().size()) {
-                List<Long> existingIds = products.stream()
-                        .map(Product::getId)
-                        .collect(Collectors.toList());
-                List<Long> missingIds = dto.getProductIds().stream()
-                        .filter(id -> !existingIds.contains(id))
-                        .collect(Collectors.toList());
-                throw new InvalidProductException("Productos no encontrados: " + missingIds);
+        // Replace associated products by their names
+        if (dto.getProductNames() != null) {
+            List<Product> products = new ArrayList<>();
+            List<String> missingNames = new ArrayList<>();
+            for (String productName : dto.getProductNames()) {
+                if (productName == null || productName.isBlank()) {
+                    missingNames.add(productName);
+                    continue;
+                }
+                productRepository.findByName(productName)
+                        .ifPresentOrElse(products::add, () -> missingNames.add(productName));
+            }
+            if (!missingNames.isEmpty()) {
+                throw new InvalidProductException("Productos no encontrados: " + missingNames);
             }
             offer.setProducts(products);
         }
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
-                Product product = productRepository.findById(discountDTO.getProductId())
+                String productName = discountDTO.getProductName();
+                if (productName == null || productName.isBlank()) {
+                    throw new InvalidProductException("Producto no encontrado con nombre: " + productName);
+                }
+                Product product = productRepository.findByName(productName)
                         .orElseThrow(() -> new InvalidProductException(
-                                "Producto no encontrado con id: " + discountDTO.getProductId()));
+                                "Producto no encontrado con nombre: " + productName));
                 OfferProductDiscount discount = new OfferProductDiscount();
                 discount.setOffer(offer);
                 discount.setProduct(product);
@@ -164,7 +182,7 @@ public class OfferService {
                 .flatMap(offer -> offer.getDiscounts().stream()
                         .map(d -> {
                             ProductDiscountDTO dto = new ProductDiscountDTO();
-                            dto.setProductId(d.getProduct().getId());
+                            dto.setProductName(d.getProduct().getName());
                             dto.setDiscountPercentage(d.getDiscountPercentage());
 
                             BigDecimal price = d.getProduct().getPrice();

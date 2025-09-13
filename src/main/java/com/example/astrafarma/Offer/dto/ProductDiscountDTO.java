@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class ProductDiscountDTO {
-    private Long productId;
+    private String productName;
     private int discountPercentage;
     private BigDecimal discountedPrice;
 }

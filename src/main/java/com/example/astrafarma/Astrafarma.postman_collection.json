@@ -342,7 +342,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"imageUrl\": \"https://img.com/1.jpg\",\r\n  \"mensajeWhatsApp\": \"¡Oferta especial!\",\r\n  \"startDate\": \"2025-08-26T00:00:00\",\r\n  \"endDate\": \"2025-09-01T00:00:00\",\r\n  \"productIds\": [1, 2, 3]\r\n}",
+                                                        "raw": "{\r\n  \"imageUrl\": \"https://img.com/1.jpg\",\r\n  \"mensajeWhatsApp\": \"¡Oferta especial!\",\r\n  \"startDate\": \"2025-08-26T00:00:00\",\r\n  \"endDate\": \"2025-09-01T00:00:00\",\r\n  \"productNames\": [\"Aspirina\", \"Ibuprofeno\", \"Paracetamol\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -379,7 +379,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"imageUrl\": \"https://img.com/1.jpg\",\r\n  \"mensajeWhatsApp\": \"¡Oferta especial!\",\r\n  \"startDate\": \"2025-08-26T00:00:00\",\r\n  \"endDate\": \"2025-09-01T00:00:00\",\r\n  \"productIds\": [1, 2, 3]\r\n}",
+                                                        "raw": "{\r\n  \"imageUrl\": \"https://img.com/1.jpg\",\r\n  \"mensajeWhatsApp\": \"¡Oferta especial!\",\r\n  \"startDate\": \"2025-08-26T00:00:00\",\r\n  \"endDate\": \"2025-09-01T00:00:00\",\r\n  \"productNames\": [\"Aspirina\", \"Ibuprofeno\", \"Paracetamol\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
