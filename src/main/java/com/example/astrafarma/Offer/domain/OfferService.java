@@ -53,14 +53,12 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(offer);
     }
 
-
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
         if (offer.getMensajeWhatsApp() == null || offer.getMensajeWhatsApp().isBlank()) {
             throw new IllegalArgumentException("mensajeWhatsApp es requerido");
         }
 
-        // Load and validate products individually by name to avoid duplicate/size issues
         List<Product> products = new ArrayList<>();
         List<String> missingNames = new ArrayList<>();
         if (dto.getProductNames() != null) {
@@ -78,7 +76,6 @@ public class OfferService {
         }
         offer.setProducts(products);
 
-        // Map discounts ensuring each product exists
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
@@ -107,7 +104,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(saved);
     }
 
-
     public OfferDTO updateOffer(Long id, OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException("Oferta no encontrada"));
@@ -116,7 +112,6 @@ public class OfferService {
             offer.setTitle(dto.getTitle());
         }
         if (dto.getDescription() != null) {
-            // Update description when present
             offer.setDescription(dto.getDescription());
         }
         if (dto.getMensajeWhatsApp() != null) {
@@ -127,11 +122,11 @@ public class OfferService {
         }
         if (dto.getStartDate() != null) {
             offer.setStartDate(dto.getStartDate());
-        }
+               }
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
-        // Replace associated products by their names
+
         if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
             List<String> missingNames = new ArrayList<>();
@@ -148,6 +143,7 @@ public class OfferService {
             }
             offer.setProducts(products);
         }
+
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
@@ -165,11 +161,13 @@ public class OfferService {
                 offer.getDiscounts().add(discount);
             }
         }
+
         if (image != null && !image.isEmpty()) {
             supabaseStorage.deleteImage(offer.getImageUrl(), false);
             UploadResponseDTO img = supabaseStorage.uploadImage(image, false);
             offer.setImageUrl(img.getUrl());
         }
+
         Offer updated = offerRepository.save(offer);
         return offerMapper.offerToOfferDTO(updated);
     }
