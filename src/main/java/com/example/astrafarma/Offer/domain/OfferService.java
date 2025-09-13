@@ -103,8 +103,9 @@ public class OfferService {
             offer.setTitle(dto.getTitle());
         }
         if (dto.getDescription() != null) {
+            // Update description when present
             offer.setDescription(dto.getDescription());
-       
+        }
         if (dto.getImageUrl() != null) {
             offer.setImageUrl(dto.getImageUrl());
         }
