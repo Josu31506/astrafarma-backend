@@ -25,6 +25,10 @@ public class Offer {
     @Column(name = "description", length = 1256)
     private String description;
 
+    @NotEmpty(message = "El mensaje de WhatsApp no puede estar vacío")
+    @Column(name = "mensaje_whats_app", length = 1000, nullable = false)
+    private String mensajeWhatsApp;
+
     @Column(name = "image_url", length = 1256)
     private String imageUrl;
 
