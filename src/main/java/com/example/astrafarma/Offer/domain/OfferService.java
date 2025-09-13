@@ -53,11 +53,10 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(offer);
     }
 
-
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
-        // Load and validate products individually by name to avoid duplicate/size issues
+        // Validate product names
         List<Product> products = new ArrayList<>();
         List<String> missingNames = new ArrayList<>();
         if (dto.getProductNames() != null) {
@@ -75,7 +74,7 @@ public class OfferService {
         }
         offer.setProducts(products);
 
-        // Map discounts ensuring each product exists
+        // Map discounts
         if (dto.getDiscounts() != null) {
             List<OfferProductDiscount> discounts = new ArrayList<>();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
@@ -104,7 +103,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(saved);
     }
 
-
     public OfferDTO updateOffer(Long id, OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException("Oferta no encontrada"));
@@ -113,19 +111,19 @@ public class OfferService {
             offer.setTitle(dto.getTitle());
         }
         if (dto.getDescription() != null) {
-            // Update description when present
             offer.setDescription(dto.getDescription());
         }
         if (dto.getImageUrl() != null) {
             offer.setImageUrl(dto.getImageUrl());
-        }
+               }
         if (dto.getStartDate() != null) {
             offer.setStartDate(dto.getStartDate());
         }
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
-        // Replace associated products by their names
+
+        // Replace products by name
         if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
             List<String> missingNames = new ArrayList<>();
@@ -142,6 +140,8 @@ public class OfferService {
             }
             offer.setProducts(products);
         }
+
+        // Replace discounts by product name
         if (dto.getDiscounts() != null) {
             offer.getDiscounts().clear();
             for (ProductDiscountDTO discountDTO : dto.getDiscounts()) {
@@ -159,11 +159,13 @@ public class OfferService {
                 offer.getDiscounts().add(discount);
             }
         }
+
         if (image != null && !image.isEmpty()) {
             supabaseStorage.deleteImage(offer.getImageUrl(), false);
             UploadResponseDTO img = supabaseStorage.uploadImage(image, false);
             offer.setImageUrl(img.getUrl());
         }
+
         Offer updated = offerRepository.save(offer);
         return offerMapper.offerToOfferDTO(updated);
     }
