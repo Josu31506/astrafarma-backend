@@ -53,7 +53,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(offer);
     }
 
-
     public OfferDTO createOffer(OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerMapper.offerDTOToOffer(dto);
 
@@ -96,7 +95,6 @@ public class OfferService {
         return offerMapper.offerToOfferDTO(saved);
     }
 
-
     public OfferDTO updateOffer(Long id, OfferDTO dto, MultipartFile image) throws Exception {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException("Oferta no encontrada"));
@@ -117,7 +115,7 @@ public class OfferService {
         if (dto.getEndDate() != null) {
             offer.setEndDate(dto.getEndDate());
         }
-        // Replace associated products by their names
+          
         if (dto.getProductNames() != null) {
             List<Product> products = new ArrayList<>();
             List<String> missingNames = new ArrayList<>();
